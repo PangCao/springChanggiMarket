@@ -444,10 +444,10 @@ public class BoardDao {
 	public List<Boardlist> notice(String search_title) {
 		String sql = "";
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select * from notice order by n_id desc";
+			sql = "select * from notice order by n_num desc";
 		}
 		else {
-			sql = "select * from notice where n_title like '%"+search_title+"%' order by n_id desc";
+			sql = "select * from notice where n_title like '%"+search_title+"%' order by n_num desc";
 		}
 		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
 

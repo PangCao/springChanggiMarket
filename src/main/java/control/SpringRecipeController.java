@@ -23,21 +23,22 @@ public class SpringRecipeController {
 	private RecipeDao dao;
 	
 	@RequestMapping("/recipe/recipes")
-	public String recipes(@RequestParam(required=false) String order, @RequestParam(required=false) String search_title, Model model) {
-		ArrayList<recipelist> fp = (ArrayList<recipelist>) dao.recipes(search_title, order);
+	public String recipes(@RequestParam(required=false) String order, @RequestParam(value="r_category", required=false) String category,@RequestParam(required=false) String search_title, Model model) {
+		System.out.println(category);
+		ArrayList<recipelist> fp = (ArrayList<recipelist>) dao.recipes(search_title, order, category);
 		ArrayList<foodprice> foodprice = (ArrayList<dto.foodprice>) dao.price();
 		if (order != null && !order.equals("null")) {
 			if (order.equals("rowprice") || order.equals("highprice")) {
 				model.addAttribute("food", dao.orderprice(order, fp, foodprice));
 			}
 			else {
-				model.addAttribute("food", dao.recipes(search_title, order));
+				model.addAttribute("food", dao.recipes(search_title, order, category));
 			}
 		}
 		else {
-			model.addAttribute("food", dao.recipes(search_title, order));
+			model.addAttribute("food", dao.recipes(search_title, order, category));
 		}
-		model.addAttribute("cnt", dao.count(search_title));
+		model.addAttribute("cnt", dao.count(search_title, category));
 		model.addAttribute("foodprice", dao.price());
 		if (order != null && !order.equals("null")) {
 			model.addAttribute("order", order);

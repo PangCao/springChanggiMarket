@@ -237,45 +237,45 @@ public class RecipeDao {
 		return result.isEmpty() ? null : result.get(0);
 	}
 
-	public Integer count(String search_title) {
+	public Integer count(String search_title, String category) {
 
 		String sql = "";
 
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select count(*) from recipe";
+			sql = "select count(*) from recipe where r_category = ?";
 		}
 		else {
-			sql = "select count(*) from recipe where r_name like '%"+search_title+"%'";
+			sql = "select count(*) from recipe where  r_category = ? and r_name like '%"+search_title+"%'";
 		}
-		Integer count = jt.queryForObject(sql, Integer.class);
+		Integer count = jt.queryForObject(sql, Integer.class, category);
 
 		return count;
 	}
 
-	public List<recipelist> recipes(String search_title, String order) {
+	public List<recipelist> recipes(String search_title, String order, String category) {
 		
 		String sql = "";
 	
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
 			if (order != null && order.equals("new")) {
-				sql = "select * from recipe order by r_id desc";
+				sql = "select * from recipe where r_category = ? order by r_id desc";
 			}
 			else if (order != null && order.equals("sell")) {
-				sql = "select * from recipe order by r_sell desc";
+				sql = "select * from recipe where r_category = ? order by r_sell desc";
 			}
 			else {
-				sql = "select * from recipe";
+				sql = "select * from recipe where r_category = ?";
 			}
 		}
 		else {
 			if (order != null && order.equals("new")) {
-				sql = "select * from recipe where r_name like '%"+search_title+"%' order by r_id desc";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_id desc";
 			}
 			else if (order != null && order.equals("sell")) {
-				sql = "select * from recipe where r_name like '%"+search_title+"%' order by r_sell desc";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_sell desc";
 			}
 			else {
-				sql = "select * from recipe where r_name like '%"+search_title+"%'";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%'";
 			}
 		}
 		
@@ -294,7 +294,7 @@ public class RecipeDao {
 				rp.setR_tip(rs.getString("r_tip"));
 				rp.setR_img(rs.getString("r_img"));
 				return rp;
-			}});
+			}}, category);
 			
 		return result; 
 	}

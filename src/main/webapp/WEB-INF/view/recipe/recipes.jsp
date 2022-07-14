@@ -148,20 +148,27 @@
             		
             		if (cupage == 1){
             	%>
-                <p><b>&lt;</b>
+                <p><b>&lt;&nbsp;&nbsp;</b>
                 <%
             		}
             		else {
            		%>
-   		                 <a href="./recipes?r_category=<%=ct %>&page=<%=cupage-1%>&search_title=<%=search_title%>&order=<%=order%>"><b>&gt;</b></a></p>
+   		                 <a href="./recipes?r_category=<%=ct %>&page=<%=cupage-1%>&search_title=<%=search_title%>&order=<%=order%>"><b>&lt;</b></a></p>&nbsp;&nbsp;
            		
            		<%
             			}
                 	int pagenum = (cnt/20)+1;
                 	for (int a = 0; a < pagenum; a++) {
+                		if (cupage == a+1) {
                 %>
-                 	<a href="./recipes?r_category=<%=ct %>&page=<%=a+1%>&search_title=<%=search_title%>&order=<%=order%>"><%=a+1%></a>
+                	<a href="./recipes?r_category=<%=ct %>&page=<%=a+1%>&search_title=<%=search_title%>&order=<%=order%>" style="color: red;"><%=a+1%></a>&nbsp;&nbsp;
+                <%
+                		}
+                		else{
+                %>
+                 	<a href="./recipes?r_category=<%=ct %>&page=<%=a+1%>&search_title=<%=search_title%>&order=<%=order%>"><%=a+1%></a>&nbsp;&nbsp;
                	<%
+                		}
                 	}
                 	if (pagenum == cupage) { 
                	%>

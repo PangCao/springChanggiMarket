@@ -280,7 +280,6 @@ public class CartDao {
 				return dt;
 			}});
 		ArrayList<marketDto> ans = new ArrayList<marketDto>();
-		System.out.println("고객"+customerMarker.getX() +":"+customerMarker.getY());
 		for (int i = 0; i < result.size(); i++) {
 			marketDto dto2 = result.get(i);
 			System.out.println(dto2.getX() +":"+ dto2.getY());
@@ -289,7 +288,7 @@ public class CartDao {
 				ans.add(dto2);
 			}
 		}
-		System.out.println();
+
 		return ans;
 	}
 	
@@ -299,7 +298,6 @@ public class CartDao {
 		addr = addr.substring(addr.indexOf(")")+1);
 		addr = addr.substring(0, addr.lastIndexOf(" "));
 		marketDto result = getGeoDataByAddress(addr);
-		System.out.println(result.getX());
 		return result;
 	}
 
