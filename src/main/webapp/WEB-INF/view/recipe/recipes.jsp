@@ -37,17 +37,13 @@
 	String ct = request.getParameter("r_category");
 	int cnt = 0;
 	int cupage = 1;
-	if (request.getParameter("page") != null) {
-		cupage = Integer.parseInt(request.getParameter("page"));
+	if (request.getAttribute("page") != null) {
+		cupage = Integer.parseInt((String)request.getAttribute("page"));
 	}
 	if(request.getAttribute("cnt")!=null){
 		cnt = (Integer)request.getAttribute("cnt");
 	}
-	int min = (cupage - 1) *20;
-	int max = cupage * 20;
-	if (max > cnt) {
-		max = cnt;
-	}
+	
 	String chk = request.getParameter("chk");
 	if (chk != null){
 		if (chk.equals("1")) {
@@ -110,7 +106,7 @@
             <div class="row">
            	<%
 				
-           		for (int i = min; i <max; i++) {
+           		for (int i = 0; i <rl.size(); i++) {
            			int price = 0;
            			recipelist rp = rl.get(i);           			
            			if(rp.getR_category().equals(ct)){
@@ -145,7 +141,21 @@
             </div>
             <div>
             	<%
-            		
+            		int pagenum = (cnt/20)+1;
+            		int minpage;
+            		int maxpage;
+            		if (cupage < 3) {
+            			minpage = 0;
+            			maxpage = 5;
+            		}
+            		else {
+            			minpage = cupage - 3;
+            			maxpage = cupage + 2;
+            		}
+            		if (maxpage > pagenum) {
+            			maxpage = pagenum;
+            		}
+
             		if (cupage == 1){
             	%>
                 <p><b>&lt;&nbsp;&nbsp;</b>
@@ -157,9 +167,8 @@
            		
            		<%
             			}
-                	int pagenum = (cnt/20)+1;
-                	for (int a = 0; a < pagenum; a++) {
-                		if (cupage == a+1) {
+                	for (int a = minpage; a < maxpage; a++) {
+                		if (a == cupage - 1) {
                 %>
                 	<a href="./recipes?r_category=<%=ct %>&page=<%=a+1%>&search_title=<%=search_title%>&order=<%=order%>" style="color: red;"><%=a+1%></a>&nbsp;&nbsp;
                 <%

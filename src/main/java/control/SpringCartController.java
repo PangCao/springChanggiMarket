@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,12 @@ public class SpringCartController {
 		return "redirect:/recipe/recipe";
 	}
 	
+	@RequestMapping("/cart/cart")
+	public String cart(Model model) {
+		model.addAttribute("foodchk", dao.foodUnit());
+		return "/cart/cart";
+	}
+	
 	@RequestMapping("/recipe/goCart")
 	public String goCart(HttpServletRequest request) {
 		dao.addCart(request);
@@ -34,6 +41,7 @@ public class SpringCartController {
 	}
 	
 	@RequestMapping("cart/order")
+	@Transactional
 	public String order(HttpServletRequest request, @RequestParam String[] selchk) {
 		dao.order(request);
 		dao.sellcnt(request, selchk);
@@ -41,10 +49,11 @@ public class SpringCartController {
 	}
 	
 	@RequestMapping("/login/mypage")
-	public String mypage(HttpSession session, @RequestParam String orderperiod, Model model) {
-		model.addAttribute("mypage", dao.mypage(session, orderperiod));
+	public String mypage(HttpSession session,@RequestParam(defaultValue = "1") String page, @RequestParam String orderperiod, Model model) {
+		model.addAttribute("mypage", dao.mypage(session, orderperiod, page));
 		model.addAttribute("cnt", dao.pagecnt(session, orderperiod));
 		model.addAttribute("orderperiod", orderperiod);
+		model.addAttribute("page", page);
 		return "login/mypage";
 	}
 	

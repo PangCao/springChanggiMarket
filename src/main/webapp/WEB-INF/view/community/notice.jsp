@@ -24,37 +24,14 @@
 		category = "게시판";
 	}
 	ArrayList<Boardlist> al = (ArrayList<Boardlist>)request.getAttribute("notice");
-	int cupage = 1;
-	if (request.getParameter("page") != null) {
-		cupage = Integer.valueOf(request.getParameter("page"));
-	}
-	int min = (cupage-1)*10;
-	int max = cupage*10;
+
+	int cupage = Integer.valueOf((String)request.getAttribute("page"));
+	
 	int totalpage = 0;
 	if (request.getAttribute("totalpage") != null){
 		totalpage = (Integer)request.getAttribute("totalpage");
 	}
-	if (max > totalpage) {
-		max = totalpage;
-	}
-	if (cupage == 1) {
-%>
-	<style type="text/css">
-		body > .notice > div:nth-of-type(2) > div:nth-of-type(3) > p > a.pagenum:nth-of-type(<%=cupage%>){
-    		color: red;
-		}
-	</style>
-<%
-	}
-	else {
-%>
-	<style type="text/css">
-		body > .notice > div:nth-of-type(2) > div:nth-of-type(3) > p > a.pagenum:nth-of-type(<%=cupage+1%>){
-    		color: red;
-		}
-	</style>
-<%
-	}
+	
 %>
 
 
@@ -80,7 +57,7 @@
                     <th class="col-2">조회수</th>
                 </tr>
                 <%
-                	for (int i = min; i < max; i++) {
+                	for (int i = 0; i < al.size(); i++) {
                 		Boardlist bl = al.get(i);
                 %>
                 	<tr>
@@ -132,51 +109,98 @@
 	                if (category.equals("공지사항")){
 	            		if (cupage == 1){
             	%>
-                <p><b>&lt;</b>
+                <p><b>&lt;</b>&nbsp;&nbsp;
                 <%
             			}
             			else {
            		%>
-   		                 <p><a href="notice?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>
-           		
-           		<%
-            			}
-                		int pagenum = ((totalpage-1)/10)+1;
-                		for (int a = 0; a < pagenum; a++) {
-                %>
-                 	<a href="notice?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>
-               	<%
-	                	}
-	                	if (pagenum == cupage) { 
-               	%>
-               		<b>&gt;</b></p>
-               	<%
-	                	}
-	                	else {
-               	%>
-                <a href="notice?page=<%=cupage+1%>&search_title=<%=search_title%>" class="pagenum"><b>&gt;</b></a></p>
-                <%
-                		}
-                	}
-	                else {
-     					if (cupage == 1){
-            	%>
-                <p><b>&lt;</b>
-                <%
-            			}
-            			else {
-           		%>
-   		                 <p><a href="bulletin?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>
+   		                 <p><a href="notice?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>&nbsp;&nbsp;
            		
            		<%
             			}
                 		int pagenum = (totalpage/10)+1;
-                		for (int a = 0; a < pagenum; a++) {
+                		int minpage;
+                		int maxpage;
+                		if (cupage < 3) {
+                			minpage = 0;
+                			maxpage = 5;
+                		}
+                		else {
+                			minpage = cupage-3;
+                			maxpage = cupage+2;
+                		}
+                		if (maxpage > pagenum) {
+                			maxpage = pagenum;
+                		}
+                		if (totalpage == 0) {
+                			maxpage = 1;
+                		}
+                		
+                		for (int a = minpage; a < maxpage; a++) {
+                			if (a == cupage-1){
                 %>
-                 	<a href="bulletin?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>
+                	<a href="notice?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum" style="color: red;"><%=a+1%></a>&nbsp;&nbsp;
+                <%
+                			}
+                			else{
+                %>
+                
+                 	<a href="notice?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>&nbsp;&nbsp;
+               	<%			}
+                		}
+	                		if (maxpage == cupage) { 
+               	%>
+               		<b>&gt;</b></p>
                	<%
-	                	}
-	                	if (pagenum == cupage) { 
+	                		}
+	                		else {
+               	%>
+                <a href="notice?page=<%=cupage+1%>&search_title=<%=search_title%>" class="pagenum"><b>&gt;</b></a></p>
+                <%
+                			}
+               			}
+	                else {
+     					if (cupage == 1){
+            	%>
+                <p><b>&lt;</b>&nbsp;&nbsp;
+                <%
+            			}
+            			else {
+           		%>
+   		                 <p><a href="bulletin?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>&nbsp;&nbsp;
+           		
+           		<%
+            			}
+                		int pagenum = (totalpage/10)+1;
+                		int minpage;
+                		int maxpage;
+                		if (cupage < 3) {
+                			minpage = 0;
+                			maxpage = 5;
+                		}
+                		else {
+                			minpage = cupage-3;
+                			maxpage = cupage+2;
+                		}
+                		if (maxpage > pagenum) {
+                			maxpage = pagenum;
+                		}
+                		if (totalpage == 0) {
+                			maxpage = 1;
+                		}
+                		for (int a = minpage; a < maxpage; a++) {
+                			if(a == cupage-1) {
+                %>
+                 	<a href="bulletin?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum" style="color: red;"><%=a+1%></a>&nbsp;&nbsp;
+               	<%
+                			}
+                			else {
+                %>
+                	<a href="bulletin?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>&nbsp;&nbsp;
+                <%
+                			}		
+                		}
+	                	if (maxpage == cupage) { 
                	%>
                		<b>&gt;</b></p>
                	<%
@@ -185,8 +209,8 @@
                	%>
                 <a href="bulletin?page=<%=cupage+1%>&search_title=<%=search_title%>" class="pagenum"><b>&gt;</b></a></p>
                 <%
-                		}
-	                }
+               			}
+                	}
                 %>
            	</div>
         </div>

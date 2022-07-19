@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="dto.*" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +16,7 @@
 <title>ChanggiFood-장바구니</title>
 <%
 	ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+	Map<String, Integer> cf = (HashMap<String, Integer>)request.getAttribute("foodchk");
 	customer cu = (customer)session.getAttribute("user");
 	if (al != null && al.size() > 0) {
 %>
@@ -109,14 +110,31 @@
                             <ul>
                             <%
                             	int sum = 0;
+                            	int price = 0;
+                            	int cnt = 0;
+                            	int max = 0;
                             	for (int j = 0; j < ca.getFoods().length; j++){
-                            		sum += Integer.valueOf(ca.getFoodprice()[j]) *Integer.valueOf(ca.getFoodunit()[j]);
+                            		if (ca.getFoodprice()[j] != null && !ca.getFoodprice()[j].equals("null") && !ca.getFoodprice()[j].equals("0")){
+                            			sum += Integer.valueOf(ca.getFoodprice()[j]) *Integer.valueOf(ca.getFoodunit()[j]);
+                            			price = Integer.valueOf(ca.getFoodprice()[j]);
+                            			cnt = Integer.valueOf(ca.getFoodunit()[j]);
+                            			max = cf.get(ca.getFoods()[j]);
+                            		}
+                            		else {
+                            			price = 0;
+                            			cnt = 0;
+                            			max = 0;
+                            		}
                             %>
                             	<input type="hidden" name="singfoodlen<%=i %>" id="singfoodlen<%=i %>" value="<%=ca.getFoods().length %>">
-                            	<li><label for="a<%=i %><%=j %>" class="col-5"><%= ca.getFoods()[j] %></label><p class="col-5"><%=ca.getFoodprice()[j] %> 원</p><input type="number" value="<%=ca.getFoodunit()[j] %>" min="0" class="form-control col-2" id="f_num<%=i%><%=j%>" onclick="food_num<%=i%><%=j%>()"></li>
+                            	<li>
+                            		<label for="a<%=i %><%=j %>" class="col-5"><%= ca.getFoods()[j] %></label>
+                            		<p class="col-5"><%=price %> 원</p>
+                            		<input type="number" value="<%=cnt %>" min="0" max="<%=max %>" class="form-control col-2" id="f_num<%=i%><%=j%>" onclick="food_num<%=i%><%=j%>()">
+                           		</li>
                             	<input type="hidden" value="<%= ca.getFoods()[j] %>" name="singfoodname<%=i %><%=j %>" id="singfoodname<%=i %><%=j %>">
-                            	<input type="hidden" value="<%=ca.getFoodprice()[j] %>" name="foodprice<%=i %><%=j %>" id="foodprice<%=i %><%=j %>">
-                            	<input type="hidden" value="<%=ca.getFoodunit()[j] %>" name="foodunit<%=i %><%=j %>" id="foodunit<%=i %><%=j %>">
+                            	<input type="hidden" value="<%=price %>" name="foodprice<%=i %><%=j %>" id="foodprice<%=i %><%=j %>">
+                            	<input type="hidden" value="<%=cnt %>" min="0" max="<%=max %>" name="foodunit<%=i %><%=j %>" id="foodunit<%=i %><%=j %>">
                             	<script type="text/javascript">
 									function food_num<%=i%><%=j%>() {
 										var num = document.getElementById("f_num<%=i%><%=j%>").value;

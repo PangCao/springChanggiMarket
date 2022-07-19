@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dao.CartDao;
 import dao.RecipeDao;
 import dto.foodprice;
 import dto.recipelist;
@@ -23,20 +24,20 @@ public class SpringRecipeController {
 	private RecipeDao dao;
 	
 	@RequestMapping("/recipe/recipes")
-	public String recipes(@RequestParam(required=false) String order, @RequestParam(value="r_category", required=false) String category,@RequestParam(required=false) String search_title, Model model) {
-		System.out.println(category);
-		ArrayList<recipelist> fp = (ArrayList<recipelist>) dao.recipes(search_title, order, category);
+	public String recipes(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String order, @RequestParam(value="r_category", required=false) String category, @RequestParam(required=false) String search_title, Model model) {
+		ArrayList<recipelist> fp = (ArrayList<recipelist>) dao.recipes(search_title, order, category, page);
 		ArrayList<foodprice> foodprice = (ArrayList<dto.foodprice>) dao.price();
+		model.addAttribute("page", page);
 		if (order != null && !order.equals("null")) {
 			if (order.equals("rowprice") || order.equals("highprice")) {
 				model.addAttribute("food", dao.orderprice(order, fp, foodprice));
 			}
 			else {
-				model.addAttribute("food", dao.recipes(search_title, order, category));
+				model.addAttribute("food", dao.recipes(search_title, order, category, page));
 			}
 		}
 		else {
-			model.addAttribute("food", dao.recipes(search_title, order, category));
+			model.addAttribute("food", dao.recipes(search_title, order, category, page));
 		}
 		model.addAttribute("cnt", dao.count(search_title, category));
 		model.addAttribute("foodprice", dao.price());
@@ -80,8 +81,7 @@ public class SpringRecipeController {
 			ra.addAttribute("chk", "0");
 			return "redirect:/recipe/recipes";
 		}
-		
-		return "";
+		return "redirect:/recipe/recipes";
 	}
 	
 	@RequestMapping("/recipe/foodsearch")

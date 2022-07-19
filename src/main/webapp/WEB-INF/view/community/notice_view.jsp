@@ -25,7 +25,7 @@
 	Boardlist bl = (Boardlist)request.getAttribute("viewInfo");
 	String userid = (String)session.getAttribute("userid");
 	String writer = bl.getWriter();
- 	int cupage = Integer.valueOf(request.getParameter("page"));
+ 	int cupage = Integer.valueOf((String)request.getAttribute("page"));
  	int id = Integer.valueOf(request.getParameter("id"));
  	int next = -1;
  	if (request.getAttribute("nextpage") != null) {
@@ -125,11 +125,7 @@
             <div>
             	<%
             		//이전페이지
-            		if (previous == -1) {
-            	%>
-                <!-- <a class="btn btn-secondary col-2" onclick="noprevious()">이전글</a> -->
-                <%
-            		}
+            		if (previous == -1) { }
             		else{
             			if (category.equals("공지사항")){
                 %>
@@ -152,14 +148,9 @@
    				<a href="review_view?id=<%=previous%>&page=<%=cupage%>&category=<%=category %>" class="btn btn-secondary col-2">이전글</a>
         		<%
             			}
-            		
             		}
             		// 다음페이지
-            		if (next == -1) {
-            	%>
-                <!-- <a class="btn btn-secondary col-2" onclick="nonext()">다음글</a> -->
-                <%
-            		}
+            		if (next == -1) {}
             		else{
             			if (category.equals("공지사항")){
                 %>
@@ -222,12 +213,5 @@
 			location.href="delnoview?id=<%=bl.getId()%>&page=<%=cupage %>&category=<%=category %>";
 		}
 	}
-	/*
-	function nonext() {
-		alert("현재 페이지가 마지막 페이지 입니다.");
-	}
-	function noprevious() {
-		alert("현재 페이지가 가장 최신 페이지 입니다.");
-	}*/
 </script>
 </html>

@@ -23,8 +23,10 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
 
+import dto.Cartfood;
 import dto.cartlist;
 import dto.customer;
 import dto.foodprice;
@@ -36,6 +38,19 @@ public class CartDao {
 	
 	public CartDao(DataSource dataSource) {
 		this.jt = new JdbcTemplate(dataSource);
+	}
+	
+	public Map<String, Integer> foodUnit() {
+		String sql = "select * from foodlist";
+		Map<String, Integer> result = new HashMap<String, Integer>();;
+		jt.query(sql, new RowMapper<Object>() {
+
+			@Override
+			public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+				result.put(rs.getString("f_name"), rs.getInt("f_unit"));
+				return null;
+			}});
+		return result;
 	}
 	
 	public void seldel(HttpSession session, String[] food) {
@@ -83,8 +98,11 @@ public class CartDao {
 		return cnt;
 	}
 	
-	public List<cartlist> mypage(HttpSession session, String orderperiod) {
+	public List<cartlist> mypage(HttpSession session, String orderperiod, String page) {
 		String id = (String)session.getAttribute("userid");
+		
+
+		int SearchPage = (Integer.valueOf(page) - 1) * 10;
 		
 		int diff = 0;
 		if (orderperiod.equals("1year")) {
@@ -102,7 +120,7 @@ public class CartDao {
 		LocalDateTime ldt = LocalDateTime.now().minusMonths(diff);
 		String s_date = ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		String sql = "select * from cusorder where o_id=? and o_date > ? order by o_num desc";
+		String sql = "select * from cusorder where o_id=? and o_date > ? order by o_num desc limit "+SearchPage+", 10";
 		List<cartlist> result = jt.query(sql, new RowMapper<cartlist>() {
 
 			@Override
@@ -244,7 +262,28 @@ public class CartDao {
 		String sql = "insert into cusorder (o_date, o_id, o_f_name, o_f_img, o_f_singname, o_f_singprice, o_f_singunit, o_addr, o_s_id) values (?,?,?,?,?,?,?,?,?)";
 		for(int i = 0; i < Integer.valueOf(foodlen); i++) {
 			if (selchk[i].equals("1")) {
+				if (selid[i].equals("밀키트")) {
+					selid[i] = "master";
+					
+				}
 				jt.update(sql, date, c_id, foodname[i], foodimg[i], singfoodname[i], singfoodprice[i], singfoodunit[i], cusaddr, selid[i]);
+			}
+		}
+		sql = "update foodlist set f_unit = ? where f_name= ?";
+		
+		String sql2 = "select f_unit from foodlist where f_name=?";
+		
+		for (int i = 0; i < singfoodname.length; i++) {
+			for (int j = 0; j < singfoodname[i].split(",").length; j++) {
+				List<Integer> result = jt.query(sql2, new RowMapper<Integer>() {
+
+					@Override
+					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+						return rs.getInt(1);
+					}}, singfoodname[i].split(",")[j]);
+				if (!result.isEmpty()) {
+					jt.update(sql, result.get(0) - Integer.valueOf(singfoodunit[i].split(",")[j]), singfoodname[i].split(",")[j]);
+				}
 			}
 		}
 	}

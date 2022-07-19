@@ -20,24 +20,18 @@
 		totalpage = Integer.valueOf((String)request.getAttribute("totalpage"));
 	}
 	//페이지 넘버
-	int min = 1;
+	int min = 0;
 	int max = 5;
 	if (cupage > 3) {
-		min = cupage - 2;
+		min = cupage - 3;
 		max = cupage + 2;
 	}
 	if (max > (totalpage/10)+1) {
 		max = (totalpage/10)+1;
 	}
-	
-	//출력 갯수
-	int max_size = alo.size();
-	int min_size = (cupage-1) * 10;
-	if (max_size > cupage * 10) {
-		max_size = cupage * 10;
+	if (totalpage != 0 && totalpage % 10 == 0) {
+		max -= 1;
 	}
-	
-	
 	if (session.getAttribute("seller") != null) {
 		name = (String)session.getAttribute("seller");
 	}
@@ -112,7 +106,7 @@
                         </tr>
                         <%
                           	if(alo != null){
-                          		for(int i = min_size; i < max_size; i++) {
+                          		for(int i = 0; i < alo.size(); i++) {
                           			orderlist ol = alo.get(i);
                           			String[] f_name = ol.getF_singname().split(",");
                           			String[] f_unit = ol.getF_singunit().split(",");
@@ -179,27 +173,27 @@
                     </div>
                     <div class="d-flex justify-content-center mt-5">
                     	<%
-                    		if (cupage == min) { 
+                    		if (cupage == 1) { 
                     	%>
-                    		<a class="mx-1" style="font-weight: bold;">&lt;</a>
+                    		<a class="mx-1" style="font-weight: bold;">&lt;</a>&nbsp;&nbsp;
 	                    <%
                     		}
                     		else {
                     			
                     	%>
-                    		<a href="store_management?order=<%=order%>&page=<%=cupage-1%>" class="mx-1" style="font-weight: bold;">&lt;</a>
+                    		<a href="store_management?order=<%=order%>&page=<%=cupage-1%>" class="mx-1" style="font-weight: bold;">&lt;</a>&nbsp;&nbsp;
                     	<%
                     		}
-	                    //페이징 시작해야함.
-	                    	for (int i = min; i <= max; i++) {
-	                    		if (i == cupage){
+	                    
+	                    	for (int i = min; i < max; i++) {
+	                    		if (i == cupage-1){
 	                    %>
-	                    	<a href="store_management?order=<%=order%>&page=<%=i%>" style="color: red;font-weight: bold;" class="mx-1"><%=i%></a>
+	                    	<a href="store_management?order=<%=order%>&page=<%=i+1%>" style="color: red;font-weight: bold;" class="mx-1"><%=i+1%></a>&nbsp;&nbsp;
 	                   	<%
 		                   		}
 		                   		else {
 	                   	%>
-	                    	<a href="store_management?order=<%=order%>&page=<%=i%>" class="mx-1"><%=i%></a>
+	                    	<a href="store_management?order=<%=order%>&page=<%=i+1%>" class="mx-1"><%=i+1%></a>&nbsp;&nbsp;
 	                    <%
 	                    		}
 	                    	}

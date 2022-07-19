@@ -18,38 +18,28 @@
 <%
 	String search_title = request.getParameter("search_title");
 	ArrayList<Boardlist> al = (ArrayList<Boardlist>)request.getAttribute("faqlist");
-	int cupage = 1;
-	if (request.getParameter("page") != null) {
-		cupage = Integer.valueOf(request.getParameter("page"));
+	int cupage = Integer.valueOf((String)request.getAttribute("page"));
+	int min = 0;
+	int max = 5;
+	if (cupage > 3) {
+		min = cupage - 3;
+		max = cupage + 2;
 	}
-	int min = (cupage-1)*10;
-	int max = cupage*10;
 	int totalpage = 0;
 	if (request.getAttribute("totalpage") != null){
 		totalpage = (Integer)request.getAttribute("totalpage");
 	}
-	if (max > totalpage) {
-		max = totalpage;
+	if (max > totalpage/10 + 1) {
+		max = totalpage/10 + 1;
 	}
-	if (cupage == 1) {
-%>
-	<style type="text/css">
-		body > .faq > div:nth-of-type(2)  > div > div:nth-of-type(2) > div:nth-last-of-type(1) > p > a.pagenum:nth-of-type(<%=cupage%>){
-			color: red;
-		}
-	</style>
-<%
+	if (totalpage % 10 == 0) {
+		max -= 1;
 	}
-	else {
-%>
-	<style type="text/css">
-		body > .faq > div:nth-of-type(2) >  div > div:nth-of-type(2) > div:nth-last-of-type(1) > p > a.pagenum:nth-of-type(<%=cupage+1%>){
-			color: red;
-		}
-	</style>
-<%
+	if (totalpage == 0) {
+		max = 1;
 	}
 %>
+
 <body>
 	<jsp:include page="../menu.jsp"/>
 	<section class="faq">
@@ -102,22 +92,28 @@
 		                <%
 		     					if (cupage == 1){
 		            	%>
-		                <p><b>&lt;</b>
+		                <p><b>&lt;</b>&nbsp;&nbsp;
 		                <%
 		            			}
 		            			else {
 		           		%>
-		   		                 <p><a href="faq?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>
+		   		                 <p><a href="faq?page=<%=cupage-1%>&search_title=<%=search_title%>"><b>&lt;</b></a>&nbsp;&nbsp;
 		           		
 		           		<%
 		            			}
-		                		int pagenum = (totalpage/10)+1;
-		                		for (int a = 0; a < pagenum; a++) {
+		                		for (int a = min; a < max; a++) {
+		                			if (a == cupage-1) {
 		                %>
-		                 	<a href="faq?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>
+		                 	<a href="faq?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum" style="color: red"><%=a+1%></a>&nbsp;&nbsp;
 		               	<%
+		                			}
+		                			else {
+		                %>
+		                 	<a href="faq?page=<%=a+1%>&search_title=<%=search_title%>" class="pagenum"><%=a+1%></a>&nbsp;&nbsp;
+		                <%
+		                			}
 			                	}
-			                	if (pagenum == cupage) { 
+			                	if (cupage == max) { 
 		               	%>
 		               		<b>&gt;</b></p>
 		               	<%

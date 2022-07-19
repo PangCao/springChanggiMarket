@@ -29,15 +29,15 @@ public class SpringLoginController {
 	}
 	
 	@RequestMapping("/login/idchk")
-	public String idchk(@RequestParam String user, @RequestParam String id, RedirectAttributes ra) {
-		int chkresult = dao.idchk(user, id);
+	public String idchk(@RequestParam String id, RedirectAttributes ra) {
+		int chkresult = dao.idchk(id);
 		ra.addAttribute("idchk", chkresult);
 		return "redirect:/login/idmailchk";
 	}
 	
 	@RequestMapping("/login/emailchk")
-	public String emailchk(@RequestParam String user, @RequestParam String email, RedirectAttributes ra) {
-		int chkresult = dao.emailchk(user, email);
+	public String emailchk(@RequestParam String email, RedirectAttributes ra) {
+		int chkresult = dao.emailchk(email);
 		ra.addAttribute("emailchk", chkresult);
 		return "redirect:/login/idmailchk";
 	}
@@ -114,7 +114,7 @@ public class SpringLoginController {
 	
 	@RequestMapping("/login/store_management")
 	public String stre_management(HttpSession session, @RequestParam String order, @RequestParam(defaultValue = "1") String page, Model model) {
-		model.addAttribute("orderlist", dao.orderlist(session, order));
+		model.addAttribute("orderlist", dao.orderlist(session, order, page));
 		model.addAttribute("totalpage",String.valueOf(dao.totalpage(session)));
 		model.addAttribute("page", page);
 		model.addAttribute("order", order);
@@ -171,9 +171,10 @@ public class SpringLoginController {
 	}
 	
 	@RequestMapping("/login/productmanage")
-	public String productmanage(@RequestParam(required=false) String search_food, Model model) {
-		model.addAttribute("foodmanage", dao.productmanage(search_food));
+	public String productmanage(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String search_food, Model model) {
+		model.addAttribute("foodmanage", dao.productmanage(search_food, page));
 		model.addAttribute("totalpage", dao.totalpage(search_food));
+		model.addAttribute("page", page);
 		return "login/productmanage";
 	}
 	
@@ -200,7 +201,12 @@ public class SpringLoginController {
 	@RequestMapping("/login/delfood")
 	public String delfood(HttpServletRequest request, @RequestParam int num) {
 		dao.delfood(request, num);
-		return "redirect:login/productmanage";
+		return "redirect:productmanage";
 	}
 	
+	@RequestMapping("/login/modifood")
+	public String modifood(HttpServletRequest request, @RequestParam int num) {
+		dao.modifood(request, num);
+		return "redirect:productmanage";
+	}	
 }

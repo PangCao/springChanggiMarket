@@ -35,7 +35,6 @@ create table if not exists seller (
     s_e_marketting boolean default false,
     primary key(s_id))default charset=utf8mb4;
 
-insert into seller values ('master','1234','밀키트','512-2151-122','밀키트','seller12@seller.se','010-1234-121','(51364)경남 창원시 마산회원구 양덕북12길 113 4층', true, true);
 insert into seller values ('admin1','1234','1번 상점','512-2151-12425','상점주인1','seller1@seller.se','010-1234-8764','(51339)경남 창원시 마산회원구 무역로 32 102호', true, true);
 insert into seller values ('admin2','1234','2번 상점','512-2151-11111','상점주인1','seller2@seller.se','010-4567-7894','(51339)경남 창원시 마산회원구 무역로 22 401호', true, true);
 insert into seller values ('admin3','1234','3번 상점','512-2151-45648','상점주인1','seller3@seller.se','010-5646-7956','(51339)경남 창원시 마산회원구 무역로 27 (마산자유무역지역관리원) 1층', true, true);
@@ -271,8 +270,6 @@ insert into foodlist (f_category, f_name, f_price, f_unit)values ('030101','북�
 insert into foodlist (f_category, f_name, f_price, f_unit)values ('040301','라멘(1인분)', 2500, 1000);
 insert into foodlist (f_category, f_name, f_price, f_unit)values ('010207','파(100g)', 1500, 1000);
 insert into foodlist (f_category, f_name, f_price, f_unit)values ('040210','고춧가루(100g)', 5000, 1000);
-insert into foodlist (f_category, f_name, f_price, f_unit) values ('010213', '콩나물(100g)', 1000, 1000);
-insert into foodlist (f_category, f_name, f_price, f_unit) values ('030305', '낙지(1마리)', 5000, 1000);
 
 create table if not exists cusorder (
 	o_num int auto_increment,

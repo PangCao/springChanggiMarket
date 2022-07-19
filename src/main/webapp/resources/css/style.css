@@ -2272,6 +2272,4 @@ body > .recipe_add {
 body > .recipe_add > div > form > div > table > tbody > tr > td {
 	vertical-align: middle;
 }
-body > .recipe_add > div > form > div:nth-of-type(1) > img {
-}
 /*addrecipe.jsp --------------------------end*/

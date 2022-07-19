@@ -35,37 +35,19 @@
 	}
 	ArrayList<cartlist> al = (ArrayList<cartlist>)request.getAttribute("mypage"); 
 	
-	int cupage = Integer.parseInt(request.getParameter("page"));
+	int cupage = Integer.parseInt((String)request.getAttribute("page"));
 	int cnt = 0;
 	if (request.getAttribute("cnt") != null) {
 		String s_cnt = String.valueOf(request.getAttribute("cnt"));
 		cnt = Integer.parseInt(s_cnt);
 	}
-	int min = (cupage-1) * 10;
-	int max = 0;
-	if (cupage * 10 > cnt){
-		max = cnt;
+	int min = 0;
+	int max = 5;
+	if (max > cnt/10+1) {
+		max = cnt/10+1;
 	}
-	else {
-		max = cupage * 10;
-	}
-	if (cupage == 1) {
-%>
-	<style type="text/css">
-		body > .mypage > div:nth-of-type(2) > div > div:nth-last-of-type(1) > p > a.pagenum:nth-of-type(<%=cupage%>){
-    		color: red;
-		}
-	</style>
-<%
-	}
-	else {
-%>
-	<style type="text/css">
-		body > .mypage > div:nth-of-type(2) > div > div:nth-last-of-type(1) > p > a.pagenum:nth-of-type(<%=cupage+1%>){
-    		color: red;
-		}
-	</style>
-<%
+	if (cnt != 0 && cnt%10 == 0) {
+		max -= 1;
 	}
 %>
 <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
@@ -175,7 +157,7 @@
                                 <th class="col-2">주문일</th>
                             </tr>
                             <%
-                            	for (int i = min; i < max; i++) {
+                            	for (int i = 0; i < al.size(); i++) {
                             		cartlist ca = al.get(i);
                             		int sum = 0;
                             %>
@@ -238,25 +220,27 @@
                 <%
             		if (cupage == 1){
             	%>
-                <p><b>&lt;</b>
+                <p><b>&lt;</b>&nbsp;&nbsp;
                 <%
             		}
             		else {
            		%>
-   		                 <p><a href="mypage?page=<%=cupage-1%>&orderperiod=<%=order_p%>"><b>&lt;</b></a>
+   		                 <p><a href="mypage?page=<%=cupage-1%>&orderperiod=<%=order_p%>"><b>&lt;</b></a>&nbsp;&nbsp;
            		
            		<%
             			}
-                	int pagenum = (cnt/10)+1;
-                	if (cnt %10 == 0 && cnt != 0) {
-                		pagenum = cnt/10;
-                	}
-                	for (int a = 0; a < pagenum; a++) {
+                	for (int a = min; a < max; a++) {
+                		if (a == cupage-1) {
                 %>
-                 	<a href="mypage?page=<%=a+1%>&orderperiod=<%=order_p%>" class="pagenum"><%=a+1%></a>
+                	<a href="mypage?page=<%=a+1%>&orderperiod=<%=order_p%>" class="pagenum" style="color: red;"><%=a+1%></a>&nbsp;&nbsp;
+             	<%
+                		}else {
+                %>
+                 	<a href="mypage?page=<%=a+1%>&orderperiod=<%=order_p%>" class="pagenum"><%=a+1%></a>&nbsp;&nbsp;
                	<%
+                		}
                 	}
-                	if (pagenum == cupage) { 
+                	if (max == cupage) { 
                	%>
                		<b>&gt;</b></p>
                	<%

@@ -75,6 +75,9 @@
                             	String[] foodunit = rp.getR_unit().split(",");
                             	int sum_price = 0;
                             	int foodlen = foods.length;
+                            	int priceviewValue = 0;
+                            	int foodnumValue = 0;
+                            	int max = 999;
                             	for (int i = 0; i < foods.length; i++) {
                                 	int fo_price = 0;                                	
                             		for (int j = 0; j < fp.size(); j++) {
@@ -85,16 +88,39 @@
                             				break;
                             			}
                             		}
+                            		if (fo_price == 0) {
+                            			priceviewValue = 0;
+                            			foodnumValue = 0;
+                            			max = 0;
+                            		}
+                            		else {
+                            			priceviewValue = fo_price*Integer.valueOf(foodunit[i]);
+                            			foodnumValue = Integer.valueOf(foodunit[i]);
+                            			max = 999;
+                            		}
                             %>
                             <tr class="form-group">
                             	<input type="hidden" value=<%=rp.getR_id() %> name="foodid">
-                                <td><input type="checkbox" id="p_chk<%=i %>" onclick="p_chked<%=i %>()" checked></td>
+                                <td>
+                                <%
+                                	if (max != 0) {
+                                %>
+                                	<input type="checkbox" id="p_chk<%=i %>" onclick="p_chked<%=i %>()" checked>
+                                <%
+                                	}
+                                	else {
+                                %>
+                                	<input type="checkbox" id="p_chk<%=i %>" onclick="p_chked<%=i %>()" disabled="disabled">
+                                <%
+                                	}
+                                %>
+                                </td>
                                 <td class="align-middle"><%=foods[i] %></td>
                                 <input type="hidden" name="foods<%=i %>" value="<%=foods[i] %>">
-                                <td><input type="number" name="foodnum<%=i %>" value="<%=foodunit[i]%>" min="0" class="form-control" onchange="p_change<%=i%>()" id="food_num<%=i%>"></td>
-                                <td class="align-middle text-right" id="priceview<%=i%>"><%=fo_price*Integer.valueOf(foodunit[i]) %>원</td>
+                                <td><input type="number" name="foodnum<%=i %>" value="<%=foodnumValue%>" min="0" max="<%=max %>" class="form-control" onchange="p_change<%=i%>()" id="food_num<%=i%>"></td>
+                                <td class="align-middle text-right" id="priceview<%=i%>"><%=priceviewValue %>원</td>
                                 <input type="hidden" name="foodprice<%=i %>" value="<%=fo_price%>" id="pricechk<%=i%>">
-                                <input type="hidden" value="<%=fo_price*Integer.valueOf(foodunit[i]) %>" id="pricevalue<%=i%>">
+                                <input type="hidden" value="<%=priceviewValue %>" id="pricevalue<%=i%>">
                             </tr>
                             <script type="text/javascript">
                             	function p_chked<%=i%>() {

@@ -201,15 +201,15 @@
 <script>
 	function selidchk() {
 		var id = document.getElementById('id').value;
-		window.open("idchk?id="+id+"&user=seller", "idchk", "width:0px, height:0px");	
+		window.open("idchk?id="+id, "idchk", "width:0px, height:0px");	
 	}
 	function emailchk() {
 		var email = document.getElementById('mail').value;
-		window.open("emailchk?email="+email+"&user=seller","emailchk", "width:0px, height:0px");
+		window.open("emailchk?email="+email,"emailchk", "width:0px, height:0px");
 	}
 	function sellnumchk() {
 		var sellnum = document.getElementById('number').value;
-		window.open("sellnumchk?sellnum="+sellnum+"&user=seller","sellnumchk", "width:0px, height:0px");
+		window.open("sellnumchk?sellnum="+sellnum,"sellnumchk", "width:0px, height:0px");
 	}
     function sample6_execDaumPostcode() {
         new daum.Postcode({

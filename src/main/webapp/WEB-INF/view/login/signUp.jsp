@@ -211,12 +211,14 @@
 		if (id.length < 8) {
 			id = "";
 		}
-		window.open("idchk?id="+id+"&user=customer", "idchk", "width:0px, height:0px");	
+		window.open("idchk?id="+id, "idchk", "width:0px, height:0px");	
 	}
+	
 	function emailchk() {
 		var email = document.getElementById('mail').value;
-		window.open("emailchk?email="+email+"&user=customer","emailchk", "width:0px, height:0px");
+		window.open("emailchk?email="+email,"emailchk", "width:0px, height:0px");
 	}
+	
     function sample6_execDaumPostcode() {	
         new daum.Postcode({
             oncomplete: function(data) {

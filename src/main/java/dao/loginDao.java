@@ -27,6 +27,14 @@ public class loginDao {
 		this.jt = new JdbcTemplate(dataSource);
 	}
 	
+	public void modifood(HttpServletRequest request, int num) {
+		int price = Integer.valueOf(request.getParameter("foodprice"+num));
+		int unit = Integer.valueOf(request.getParameter("foodunit"+num));
+		int id = Integer.valueOf(request.getParameter("fooddel"+num));
+		
+		String sql = "update foodlist set f_price=?, f_unit=? where f_id=?";
+		jt.update(sql, price, unit, id);	
+	}
 	
 	public void unsign(HttpSession session) {
 		String id1 = (String)session.getAttribute("userid");
@@ -216,15 +224,16 @@ public class loginDao {
 		}
 	}
 
-	public List<orderlist> orderlist(HttpSession session , String order) {
+	public List<orderlist> orderlist(HttpSession session , String order, String page) {
 		String sql = "";
 		String s_id = (String)session.getAttribute("seller");
+		int SearchPage = (Integer.valueOf(page) - 1) * 10;  
 		
 		if (order.equals("waiting")) {
-			sql = "select * from cusorder where o_s_id=? order by o_chk asc";
+			sql = "select * from cusorder where o_s_id=? order by o_chk asc limit "+SearchPage+", 10";
 		}
 		else if (order.equals("complete")) {
-			sql = "select * from cusorder where o_s_id=? order by o_chk desc";
+			sql = "select * from cusorder where o_s_id=? order by o_chk desc limit "+SearchPage+", 10";
 		}
 		
 		List<orderlist> orderlist = jt.query(sql, new RowMapper<orderlist>() {
@@ -379,19 +388,16 @@ public class loginDao {
 		return chkresult; 
 	}
 
-	public int emailchk(String user, String email) {
+	public int emailchk(String email) {
 
 		int chkresult = 0;
 		
 		String sql = null;
-		if (user.equals("customer")) {
-			sql = "select count(*) from customer where c_mail=?";
-		}
-		else if (user.equals("seller")) {
-			sql = "select count(*) from seller where s_mail=?";
-		}
 		
+		sql = "select count(*) from customer where c_mail=?";
 		chkresult = jt.queryForObject(sql, Integer.class, email);
+		sql = "select count(*) from seller where s_mail=?";
+		chkresult += jt.queryForObject(sql, Integer.class, email);
 
 		if (email.equals("")) {
 			chkresult = -1;
@@ -400,7 +406,7 @@ public class loginDao {
 		return chkresult; 
 	}
 
-	public int idchk(String user, String id) {
+	public int idchk(String id) {
 		
 		int chkresult = 0;
 		
@@ -555,13 +561,14 @@ public class loginDao {
 		return total;
 	}
 
-	public List<foodmanage> productmanage(String foodname) {
+	public List<foodmanage> productmanage(String foodname, String page) {
 		String sql = "";
+		int SearchPage = (Integer.valueOf(page)-1) * 10;
 		if (foodname == null) {
-			sql = "select * from foodlist order by f_id desc";
+			sql = "select * from foodlist order by f_id desc limit "+SearchPage+", 10";
 		}
 		else {
-			sql = "select * from foodlist where f_name like '%"+foodname+"%' order by f_id desc";
+			sql = "select * from foodlist where f_name like '%"+foodname+"%' order by f_id desc limit "+SearchPage+", 10";
 		}
 		List<foodmanage> result = jt.query(sql, new RowMapper<foodmanage>() {
 

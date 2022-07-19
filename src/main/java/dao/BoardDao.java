@@ -194,8 +194,11 @@ public class BoardDao {
 		return likechk;
 	}	
 	
-	public List<oneqna> one() {
-		String sql = "select * from one_qna order by oq_id desc";
+	public List<oneqna> one(String page) {
+		int SearchPage = (Integer.valueOf(page) - 1) * 10;
+		
+		String sql = "select * from one_qna order by oq_id desc limit "+SearchPage+", 10";
+		
 		List<oneqna> results= jdbcTemplate.query(sql, new RowMapper<oneqna>() {
 
 			@Override
@@ -215,13 +218,14 @@ public class BoardDao {
 	}
 	
 	
-	public List<Boardlist> bulletin(String search_title) {
+	public List<Boardlist> bulletin(String search_title, String page) {
 		String sql = "";
+		int SearchPage = (Integer.valueOf(page)-1)*10;
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select * from bulletin order by b_id desc";
+			sql = "select * from bulletin order by b_id desc limit "+SearchPage+", 10";
 		}
 		else {
-			sql = "select * from bulletin where b_title like '%"+search_title+"%' order by b_id desc";
+			sql = "select * from bulletin where b_title like '%"+search_title+"%' order by b_id desc limit "+SearchPage+", 10";
 		}
 		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
 
@@ -380,6 +384,7 @@ public class BoardDao {
 		return results;
 	}
 	
+	// 게시판 총 페이지 수 구하는 메서드
 	public Integer bopage(String search_title) {
 		String sql = "";
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
@@ -392,13 +397,15 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> faq(String search_title) {
+	public List<Boardlist> faq(String search_title, String page) {
 		String sql = "";
+		
+		int SearchPage = (Integer.valueOf(page) - 1) * 10;
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select * from faq order by f_id desc";
+			sql = "select * from faq order by f_id desc limit "+SearchPage+", 10";
 		}
 		else {
-			sql = "select * from faq where f_title like '%"+search_title+"%' order by f_id desc";
+			sql = "select * from faq where f_title like '%"+search_title+"%' order by f_id desc limit "+SearchPage+", 10";
 		}
 		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
 
@@ -414,13 +421,16 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> review(String search_title) {
+	public List<Boardlist> review(String search_title, String page) {
 		String sql = "";
+		
+		int SearchPage = (Integer.valueOf(page) - 1) * 8;
+		
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select * from r_review order by r_id desc";
+			sql = "select * from r_review order by r_id desc limit "+SearchPage+", 8";
 		}
 		else {
-			sql = "select * from r_review where r_title like '%"+search_title+"%' order by r_id desc";
+			sql = "select * from r_review where r_title like '%"+search_title+"%' order by r_id desc limit "+SearchPage+", 8";
 		}
 		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
 
@@ -441,13 +451,14 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> notice(String search_title) {
+	public List<Boardlist> notice(String search_title, String page) {
 		String sql = "";
+		int SearchPage = (Integer.valueOf(page)-1) * 10;
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
-			sql = "select * from notice order by n_num desc";
+			sql = "select * from notice order by n_id desc limit "+SearchPage+", 10";
 		}
 		else {
-			sql = "select * from notice where n_title like '%"+search_title+"%' order by n_num desc";
+			sql = "select * from notice where n_title like '%"+search_title+"%' order by n_id desc limit "+SearchPage+", 10";
 		}
 		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
 

@@ -3,6 +3,9 @@ package config;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import dao.BoardDao;
 import dao.CartDao;
@@ -10,6 +13,7 @@ import dao.RecipeDao;
 import dao.loginDao;
 
 @Configuration
+@EnableTransactionManagement
 public class AppConfig {
 	
 	@Bean(destroyMethod="close")
@@ -22,6 +26,13 @@ public class AppConfig {
 		ds.setInitialSize(2);
 		ds.setMaxActive(10);
 		return ds;
+	}
+	
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+		DataSourceTransactionManager tm = new DataSourceTransactionManager();
+		tm.setDataSource(dataSource());
+		return tm;
 	}
 	
 	@Bean

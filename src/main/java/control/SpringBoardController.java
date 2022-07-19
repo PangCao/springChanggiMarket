@@ -19,34 +19,36 @@ public class SpringBoardController {
 	private BoardDao dao;
 	
 	@RequestMapping("/community/notice")
-	public String notice(@RequestParam(required = false) String search_title, Model model) {
+	public String notice(@RequestParam(required = false) String search_title, @RequestParam(defaultValue = "1") String page, Model model) {
 		model.addAttribute("totalpage", dao.bopage(search_title));
 		model.addAttribute("category", "notice");
-		model.addAttribute("notice", dao.notice(search_title));
+		model.addAttribute("notice", dao.notice(search_title, page));
 		model.addAttribute("search_title", search_title);
+		model.addAttribute("page", page);
 		return "community/notice";
 	}
 	
 	@RequestMapping("/community/bulletin")
-	public String bulletin(@RequestParam(required = false) String search_title, Model model) {
-		model.addAttribute("notice", dao.bulletin(search_title));
-		model.addAttribute(model);
+	public String bulletin(@RequestParam(required = false) String search_title, @RequestParam(defaultValue = "1") String page, Model model) {
 		model.addAttribute("totalpage", dao.bulletinbopage(search_title));
 		model.addAttribute("category", "bulletin");
+		model.addAttribute("notice", dao.bulletin(search_title, page));
 		model.addAttribute("search_title", search_title);
+		model.addAttribute("page", page);
 		return "community/notice";
 	}
 	
 	@RequestMapping("/community/one_qna")
-	public String one_qna(Model model) {
-		model.addAttribute("oneqnalist", dao.one());
+	public String one_qna(@RequestParam(defaultValue = "1")String page, Model model) {
+		model.addAttribute("oneqnalist", dao.one(page));
 		model.addAttribute("totalpage", dao.onebopage());
+		model.addAttribute("page", page);
 		return "community/one_qna";
 	}
 	
 	@RequestMapping("/community/review")
-	public String review(@RequestParam String page, @RequestParam(required=false) String search_title, Model model) {
-		model.addAttribute("review_list", dao.review(search_title));
+	public String review(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String search_title, Model model) {
+		model.addAttribute("review_list", dao.review(search_title, page));
 		model.addAttribute("totalpage", dao.review_bopage(search_title));
 		model.addAttribute("page", page);
 		model.addAttribute("search_title", search_title);
@@ -54,9 +56,10 @@ public class SpringBoardController {
 	}
 	
 	@RequestMapping("/community/faq")
-	public String faq(@RequestParam(required=false) String search_title, Model model) {
-		model.addAttribute("faqlist", dao.faq(search_title));
+	public String faq(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String search_title, Model model) {
+		model.addAttribute("faqlist", dao.faq(search_title, page));
 		model.addAttribute("totalpage", dao.faq_bopage(search_title));
+		model.addAttribute("page", page);
 		model.addAttribute("search_title", search_title);
 		return "community/faq";
 	}
@@ -87,7 +90,7 @@ public class SpringBoardController {
 	}
 	
 	@RequestMapping("/community/notice_view")
-	public String notice_view(@RequestParam(required = false) String page, @RequestParam String category, @RequestParam String id, @RequestParam(required = false) String search_title, Model model) {
+	public String notice_view(@RequestParam(defaultValue = "1") String page, @RequestParam String category, @RequestParam String id, @RequestParam(required = false) String search_title, Model model) {
 		model.addAttribute("previouspage",  dao.previouspage(category, id));
 		model.addAttribute("nextpage", dao.nextpage(category, id));
 		model.addAttribute("viewInfo", dao.noticeview(id));

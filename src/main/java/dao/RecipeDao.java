@@ -252,30 +252,32 @@ public class RecipeDao {
 		return count;
 	}
 
-	public List<recipelist> recipes(String search_title, String order, String category) {
+	public List<recipelist> recipes(String search_title, String order, String category, String page) {
 		
 		String sql = "";
 	
+		int SearchPage = (Integer.valueOf(page)-1)*20;
+		
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
 			if (order != null && order.equals("new")) {
-				sql = "select * from recipe where r_category = ? order by r_id desc";
+				sql = "select * from recipe where r_category = ? order by r_id desc limit "+SearchPage+", 20";
 			}
 			else if (order != null && order.equals("sell")) {
-				sql = "select * from recipe where r_category = ? order by r_sell desc";
+				sql = "select * from recipe where r_category = ? order by r_sell desc limit "+SearchPage+", 20";
 			}
 			else {
-				sql = "select * from recipe where r_category = ?";
+				sql = "select * from recipe where r_category = ? limit "+SearchPage+", 20";
 			}
 		}
 		else {
 			if (order != null && order.equals("new")) {
-				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_id desc";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_id desc limit "+SearchPage+", 20";
 			}
 			else if (order != null && order.equals("sell")) {
-				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_sell desc";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' order by r_sell desc limit "+SearchPage+", 20";
 			}
 			else {
-				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%'";
+				sql = "select * from recipe where r_category = ? and r_name like '%"+search_title+"%' limit "+SearchPage+", 20";
 			}
 		}
 		
