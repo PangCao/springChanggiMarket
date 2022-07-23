@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.customer" %>
-<%@ page import="dto.cartlist" %>
+<%@ page import="dto.CustomerDto" %>
+<%@ page import="dto.CartlistDto" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-<%	
-	String order_p = request.getParameter("orderperiod");
-	ArrayList<cartlist> mycart = (ArrayList<cartlist>)session.getAttribute("myCart");
+<%
+String order_p = request.getParameter("orderperiod");
+	ArrayList<CartlistDto> mycart = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 	int cartcnt = 0;
 	if (mycart != null) {
 		cartcnt = mycart.size();
@@ -19,7 +19,7 @@
 	String c_class = "";
 	float dis = 0;
 	if (session.getAttribute("user") != null){
-		customer cu = (customer)session.getAttribute("user");
+		CustomerDto cu = (CustomerDto)session.getAttribute("user");
 		name = cu.getName();
 		point = cu.getPoint();
 		c_class = cu.getC_class();
@@ -33,7 +33,7 @@
 	else if (c_class.equals("GOLD")) {
 		dis = 5.0f;
 	}
-	ArrayList<cartlist> al = (ArrayList<cartlist>)request.getAttribute("mypage"); 
+	ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)request.getAttribute("mypage"); 
 	
 	int cupage = Integer.parseInt((String)request.getAttribute("page"));
 	int cnt = 0;
@@ -43,11 +43,21 @@
 	}
 	int min = 0;
 	int max = 5;
+	if (cupage > 3) {
+		min = cupage - 3;
+		max = cupage + 2;
+	}
 	if (max > cnt/10+1) {
 		max = cnt/10+1;
 	}
-	if (cnt != 0 && cnt%10 == 0) {
+	if (cnt%10 == 0) {
 		max -= 1;
+	}
+	if (cnt == 0) {
+		max = 1;
+	}
+	if (max < 5) {
+		min = 0;
 	}
 %>
 <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
@@ -69,12 +79,12 @@
                 <div>
                     <div>
                         <i class="fa-solid fa-user"></i>
-                        <p>안녕하세요. <%=name %>님</p>
-                        <p><%=c_class %> 등급 | <%=dis%>%적립</p>
+                        <p>안녕하세요. <%=name%>님</p>
+                        <p><%=c_class%> 등급 | <%=dis%>%적립</p>
                     </div>
                     <div>
                         <h5>적립금 &gt;</h5>
-                        <h5 class="hh"><%=point %>원</h5>
+                        <h5 class="hh"><%=point%>원</h5>
                         <p>소멸 예정 : 0원</p>
                     </div>
                     <div>
@@ -83,7 +93,7 @@
                     </div>
                     <div>
                         <a href="<c:url value='/cart/cart'/>"><h5>장바구니 &gt;</h5></a>
-                        <h5 class="hh"><%=cartcnt %>개</h5>
+                        <h5 class="hh"><%=cartcnt%>개</h5>
                     </div>
                 </div>
             </div>
@@ -104,7 +114,7 @@
                     <div>
                         <h5>주문내역 <small>지난 1년 간의 주문 내역 조회가 가능합니다.</small></h5>
                         <%
-                        	if (order_p.equals("1year")) {
+                        if (order_p.equals("1year")) {
                         %>
                         <select name="order_period" id="order_period" class="col-3 form-control" onchange="orderperi()">
                             <option value="1year" selected>1년</option>
@@ -113,8 +123,8 @@
                             <option value="6month">6개월</option>
                         </select>
                         <%
-                        	}
-                        	else if (order_p.equals("1month")){
+                        }
+                                                                        	else if (order_p.equals("1month")){
                         %>
                         <select name="order_period" id="order_period" class="col-3 form-control" onchange="orderperi()">
                             <option value="1year">1년</option>
@@ -123,8 +133,8 @@
                             <option value="6month">6개월</option>
                         </select>
                         <%
-                        	}
-                        	else if (order_p.equals("3month")){
+                        }
+                                                                        	else if (order_p.equals("3month")){
                         %>
                         <select name="order_period" id="order_period" class="col-3 form-control" onchange="orderperi()">
                             <option value="1year">1년</option>
@@ -133,8 +143,8 @@
                             <option value="6month">6개월</option>
                         </select>
                         <%
-                        	}
-                        	else if (order_p.equals("6month")){
+                        }
+                                                                        	else if (order_p.equals("6month")){
                         %>
                         <select name="order_period" id="order_period" class="col-3 form-control" onchange="orderperi()">
                             <option value="1year">1년</option>
@@ -143,7 +153,7 @@
                             <option value="6month" selected>6개월</option>
                         </select>
                         <%
-                        	}
+                        }
                         %>
                     </div>
                     <hr>
@@ -157,9 +167,9 @@
                                 <th class="col-2">주문일</th>
                             </tr>
                             <%
-                            	for (int i = 0; i < al.size(); i++) {
-                            		cartlist ca = al.get(i);
-                            		int sum = 0;
+                            for (int i = 0; i < al.size(); i++) {
+                                                                                    		CartlistDto ca = al.get(i);
+                                                                                    		int sum = 0;
                             %>
                             <tr>
                             	<td><img src="../resources/images/<%=ca.getFilename() %>" alt=""></td>

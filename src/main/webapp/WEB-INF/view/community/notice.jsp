@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
-<%@ page import="dto.Boardlist"%>
+<%@ page import="dto.BoardlistDto"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600&family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <%
-	request.setCharacterEncoding("utf-8");
+request.setCharacterEncoding("utf-8");
 	String search_title = (String)request.getAttribute("search_title");
 	String category = (String)request.getAttribute("category");
 	if (category.equals("notice")) {
@@ -23,7 +23,7 @@
 	else if (category.equals("bulletin")) {
 		category = "게시판";
 	}
-	ArrayList<Boardlist> al = (ArrayList<Boardlist>)request.getAttribute("notice");
+	ArrayList<BoardlistDto> al = (ArrayList<BoardlistDto>)request.getAttribute("notice");
 
 	int cupage = Integer.valueOf((String)request.getAttribute("page"));
 	
@@ -31,7 +31,6 @@
 	if (request.getAttribute("totalpage") != null){
 		totalpage = (Integer)request.getAttribute("totalpage");
 	}
-	
 %>
 
 
@@ -45,8 +44,8 @@
         </div>
         <div class="container">
             <div>
-                <h3><%=category %></h3>
-                <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 커뮤니티 > <%=category %></p>
+                <h3><%=category%></h3>
+                <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 커뮤니티 > <%=category%></p>
             </div>
             <table class="table text-center">
                 <tr>
@@ -57,8 +56,8 @@
                     <th class="col-2">조회수</th>
                 </tr>
                 <%
-                	for (int i = 0; i < al.size(); i++) {
-                		Boardlist bl = al.get(i);
+                for (int i = 0; i < al.size(); i++) {
+                                		BoardlistDto bl = al.get(i);
                 %>
                 	<tr>
                 		<%
@@ -132,10 +131,15 @@
                 		if (maxpage > pagenum) {
                 			maxpage = pagenum;
                 		}
+                		if (totalpage%10 == 0) {
+                			maxpage -= 1;
+                		}
                 		if (totalpage == 0) {
                 			maxpage = 1;
                 		}
-                		
+                		if (maxpage < 5) {
+                			minpage = 0;
+                		}
                 		for (int a = minpage; a < maxpage; a++) {
                 			if (a == cupage-1){
                 %>
@@ -185,8 +189,14 @@
                 		if (maxpage > pagenum) {
                 			maxpage = pagenum;
                 		}
+                		if (totalpage%10 == 0) {
+                			maxpage -= 1;
+                		}
                 		if (totalpage == 0) {
                 			maxpage = 1;
+                		}
+                		if (maxpage < 5) {
+                			minpage = 0;
                 		}
                 		for (int a = minpage; a < maxpage; a++) {
                 			if(a == cupage-1) {

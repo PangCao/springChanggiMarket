@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.barcodesearch" %>
+<%@ page import="dto.BarcodesearchDto" %>
 <%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
@@ -10,7 +10,7 @@
 <title>ChanggiFood-상품코드 선택</title>
 </head>
 <%
-	ArrayList<barcodesearch> alb = (ArrayList<barcodesearch>)request.getAttribute("barcodesearch");
+ArrayList<BarcodesearchDto> alb = (ArrayList<BarcodesearchDto>)request.getAttribute("barcodesearch");
 	if (alb == null) {
 %>
  	<script type="text/javascript">
@@ -18,7 +18,7 @@
  		window.close();
  	</script>
 <%
-	}
+}
 %>
 
 <body>
@@ -32,14 +32,14 @@
 					<th class="col-3"></th>
 				</tr>
 				<%
-					if(alb != null){
-						for (int i = 0; i < alb.size(); i++) {
-							
-							barcodesearch bs = alb.get(i);
-							String main = bs.getFb_main();
-							String middle = bs.getFb_middle();
-							String sub = bs.getFb_sub();
-							String code = main.substring(0,2) + middle.substring(0,2) + sub.substring(0,2);
+				if(alb != null){
+										for (int i = 0; i < alb.size(); i++) {
+											
+											BarcodesearchDto bs = alb.get(i);
+											String main = bs.getFb_main();
+											String middle = bs.getFb_middle();
+											String sub = bs.getFb_sub();
+											String code = main.substring(0,2) + middle.substring(0,2) + sub.substring(0,2);
 				%>
 					<tr>
 						<td><%= main %></td>

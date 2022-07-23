@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dao.CartDao;
-import dto.marketDto;
+import dto.MarketDto;
 
 @Controller
 public class SpringCartController {
@@ -71,7 +71,7 @@ public class SpringCartController {
 	
 	@RequestMapping("/cart/shipsel")
 	public String shipsel(HttpSession session ,@RequestParam String num, Model model) {
-		marketDto dto = dao.customerMarker(session);
+		MarketDto dto = dao.customerMarker(session);
 		model.addAttribute("customerMarker",dto);
 		model.addAttribute("marketlist", dao.shipsel(session, dto));
 		model.addAttribute("num", num);

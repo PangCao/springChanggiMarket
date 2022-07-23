@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.Boardlist" %>
+<%@ page import="dto.BoardlistDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,8 +16,8 @@
 <title>ChanggiFood-자주하는 질문</title>
 </head>
 <%
-	String search_title = request.getParameter("search_title");
-	ArrayList<Boardlist> al = (ArrayList<Boardlist>)request.getAttribute("faqlist");
+String search_title = request.getParameter("search_title");
+	ArrayList<BoardlistDto> al = (ArrayList<BoardlistDto>)request.getAttribute("faqlist");
 	int cupage = Integer.valueOf((String)request.getAttribute("page"));
 	int min = 0;
 	int max = 5;
@@ -37,6 +37,9 @@
 	}
 	if (totalpage == 0) {
 		max = 1;
+	}
+	if (max < 5) {
+		min = 0;
 	}
 %>
 
@@ -63,8 +66,8 @@
 		                <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 커뮤니티 > 고객센터 > 자주하는 질문</p>
 		            </div>
 		            <%
-		            	for(int i = 0; i < al.size(); i++) {
-		            		Boardlist bl = al.get(i);
+		            for(int i = 0; i < al.size(); i++) {
+		            		            		BoardlistDto bl = al.get(i);
 		            %>
                     <div>
                         <label for="faq<%=i %>" class="col-12">

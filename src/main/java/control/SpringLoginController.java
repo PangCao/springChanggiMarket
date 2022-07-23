@@ -1,29 +1,30 @@
 package control;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import dao.loginDao;
-import dto.customer;
-import dto.seller;
+import dao.LoginDao;
+import dto.CustomerDto;
+import dto.SellerDto;
 
 @Controller
 public class SpringLoginController {
 	
 	@Autowired
-	private loginDao dao;
+	private LoginDao dao;
 	
 	@RequestMapping("/login/signupprocess")
-	public String signup(@ModelAttribute customer cus, @RequestParam String pw, @RequestParam String addr1, @RequestParam String addr2, @RequestParam String addr3, @RequestParam String year, @RequestParam String month, @RequestParam String day, @RequestParam String smark, @RequestParam String emark, RedirectAttributes ra) {
-		dao.signup(cus, pw, addr1, addr2, addr3, year, month, day, smark, emark);
+	public String signup(CustomerDto cus, @RequestParam Map<String, Object> requestValues, RedirectAttributes ra) {
+		dao.signup(cus, requestValues);
 		ra.addAttribute("signup", "1");
 		return "redirect:/login/login";
 	}
@@ -50,32 +51,32 @@ public class SpringLoginController {
 	}
 	
 	@RequestMapping("/login/pwchk")
-	public String pwchk(HttpServletRequest request, @RequestParam String pw, RedirectAttributes ra, Model model) {
-		int pwchkans = dao.pwchk(request, pw, model);
+	public String pwchk(HttpSession session, @RequestParam String pw, Model model, RedirectAttributes ra) {
+		int pwchkans = dao.pwchk(session, pw, model);
 		if (pwchkans == 1) {
 			return "login/modimypage";
 		}
 		else {
 			ra.addAttribute("error","1");
-			return "redirect:login/mydimypagechk";
+			return "redirect:/login/modimypagechk";
 		}
 	}
 	
 	@RequestMapping("/login/selpwchk")
-	public String selpwchk(HttpServletRequest request, @RequestParam String pw, Model model, RedirectAttributes ra) {
-		int pwchkans = dao.selpwchk(request, pw, model);
+	public String selpwchk(HttpSession session, @RequestParam String pw, Model model, RedirectAttributes ra) {
+		int pwchkans = dao.selpwchk(session, pw, model);
 		if (pwchkans == 1) {
 			return "login/modiseller";
 		}
 		else {
 			ra.addAttribute("error", "1");
-			return "redirect:modisellerchk";
+			return "redirect:/login/modisellerchk";
 		}
 	}
 	
 	@RequestMapping("/login/seller_signupprocess")
-	public String seller_signup(seller sel, @RequestParam String pw, @RequestParam String addr1, @RequestParam String addr2, @RequestParam String addr3, @RequestParam String smark, @RequestParam String emark, RedirectAttributes ra) {
-		dao.seller_signup(sel, pw, addr1, addr2, addr3, smark, emark);
+	public String seller_signup(SellerDto sel, @RequestParam Map<String, Object> requestValues, RedirectAttributes ra) {
+		dao.seller_signup(sel, requestValues);
 		ra.addAttribute("signup", "1");
 		return "redirect:/login/login";
 	}
@@ -99,21 +100,21 @@ public class SpringLoginController {
 	}
 
 	@RequestMapping("/login/modi")
-	public String modi(HttpSession session, customer cus, @RequestParam(required=false) String pwchk, @RequestParam(required=false) String addr1, @RequestParam(required=false) String addr2, @RequestParam(required=false) String addr3, RedirectAttributes ra) {
-		dao.modi(session, cus, pwchk, addr1, addr2, addr3);
+	public String modi(HttpSession session, CustomerDto cus, @RequestParam Map<String, Object> requestValues, RedirectAttributes ra) {
+		dao.modi(session, cus, requestValues);
 		ra.addAttribute("error", "2");
 		return "redirect:modimypagechk";
 	}
 	
 	@RequestMapping("/login/selmodi")
-	public String selmodi(@RequestParam(required=false) String pwchk, seller sel, @RequestParam(required=false) String addr1, @RequestParam(required=false) String addr2, @RequestParam(required=false) String addr3, RedirectAttributes ra) {
-		dao.selmodi(sel, pwchk, addr1, addr2, addr3);
+	public String selmodi(SellerDto sel, @RequestParam Map<String, Object> requestValues, RedirectAttributes ra) {
+		dao.selmodi(sel, requestValues);
 		ra.addAttribute("error", "2");
 		return "redirect:modisellerchk";
 	}
 	
 	@RequestMapping("/login/store_management")
-	public String stre_management(HttpSession session, @RequestParam String order, @RequestParam(defaultValue = "1") String page, Model model) {
+	public String store_management(HttpSession session, @RequestParam String order, @RequestParam(defaultValue = "1") String page, Model model) {
 		model.addAttribute("orderlist", dao.orderlist(session, order, page));
 		model.addAttribute("totalpage",String.valueOf(dao.totalpage(session)));
 		model.addAttribute("page", page);
@@ -130,8 +131,8 @@ public class SpringLoginController {
 	}
 	
 	@RequestMapping("/login/idsearch")
-	public String idsearch(@RequestParam(required=false) String phone1, @RequestParam(required=false) String phone2, @RequestParam(required=false) String phone3, @RequestParam(required=false) String mail, Model model) {
-		int ans = dao.idsearch(phone1, phone2, phone3, mail, model);
+	public String idsearch(@RequestParam Map<String,Object> requestValues, Model model) {
+		int ans = dao.idsearch(requestValues, model);
 		if (ans == 1) {
 			return "login/find_id_ans";
 		}
@@ -142,8 +143,8 @@ public class SpringLoginController {
 	}
 	
 	@RequestMapping("/login/pwsearch")
-	public String pwsearch(@RequestParam String id, @RequestParam(required=false) String phone1, @RequestParam(required=false) String phone2, @RequestParam(required=false) String phone3, @RequestParam(required=false) String mail, Model model) {
-		int ans = dao.pwsearch(id, phone1, phone2, phone3, mail, model);
+	public String pwsearch(@RequestParam Map<String, Object> requestValues, Model model) {
+		int ans = dao.pwsearch(requestValues, model);
 		if (ans == 0) {
 			model.addAttribute("error", "0");
 			return "login/find_pw_ans";

@@ -1,10 +1,6 @@
 package dto;
 
-import java.io.Serializable;
-
-public class cartlist implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+public class CartlistDto{
 	
 	private int num;
 	private String foodName;

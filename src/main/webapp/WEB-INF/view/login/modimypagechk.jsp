@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.customer" %>
-<%@ page import="dto.cartlist" %>
+<%@ page import="dto.CustomerDto" %>
+<%@ page import="dto.CartlistDto" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -17,8 +17,8 @@
 <meta charset="UTF-8">
 <title>ChanggiFood-MyPage</title>
 </head>
-<% 
-	ArrayList<cartlist> mycart = (ArrayList<cartlist>)session.getAttribute("myCart");
+<%
+ArrayList<CartlistDto> mycart = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 	int cartcnt = 0;
 	if (mycart != null) {
 		cartcnt = mycart.size();
@@ -28,7 +28,7 @@
 	String c_class = "";
 	float dis = 0;
 	if (session.getAttribute("user") != null){
-		customer cu = (customer)session.getAttribute("user");
+		CustomerDto cu = (CustomerDto)session.getAttribute("user");
 		name = cu.getName();
 		point = cu.getPoint();
 		c_class = cu.getC_class();
@@ -42,7 +42,7 @@
 	else if (c_class.equals("GOLD")) {
 		dis = 5.0f;
 	}
-	ArrayList<cartlist> al = (ArrayList<cartlist>)request.getAttribute("mypage"); 
+	ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)request.getAttribute("mypage"); 
 	String error = request.getParameter("error");
 	if (error != null && error.equals("1")) {
 %>

@@ -2,14 +2,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.recipelist" %>
-<%@ page import="dto.foodprice" %>
+<%@ page import="dto.RecipelistDto" %>
+<%@ page import="dto.FoodpriceDto" %>
 <!DOCTYPE html>
 <html>
 <head>
 
 <%
-	String c_id = (String)session.getAttribute("userid");
+String c_id = (String)session.getAttribute("userid");
 	String s_id = (String)session.getAttribute("seller");
 	if (c_id != null || s_id != null) {
 %>
@@ -19,7 +19,7 @@
 		}
 	</script>
 <%
-	}
+}
 	else {
 %>
 	<script type="text/javascript">
@@ -29,37 +29,37 @@
 	</script>	
 <%
 	}
-	String search_title = request.getParameter("search_title");
-	String order = request.getParameter("order");
-	ArrayList<recipelist> rl = (ArrayList<recipelist>)request.getAttribute("food");
-	ArrayList<foodprice> fp = (ArrayList<foodprice>)request.getAttribute("foodprice");
-	
-	String ct = request.getParameter("r_category");
-	int cnt = 0;
-	int cupage = 1;
-	if (request.getAttribute("page") != null) {
+			String search_title = request.getParameter("search_title");
+			String order = request.getParameter("order");
+			ArrayList<RecipelistDto> rl = (ArrayList<RecipelistDto>)request.getAttribute("food");
+			ArrayList<FoodpriceDto> fp = (ArrayList<FoodpriceDto>)request.getAttribute("foodprice");
+			
+			String ct = request.getParameter("r_category");
+			int cnt = 0;
+			int cupage = 1;
+			if (request.getAttribute("page") != null) {
 		cupage = Integer.parseInt((String)request.getAttribute("page"));
-	}
-	if(request.getAttribute("cnt")!=null){
+			}
+			if(request.getAttribute("cnt")!=null){
 		cnt = (Integer)request.getAttribute("cnt");
-	}
-	
-	String chk = request.getParameter("chk");
-	if (chk != null){
+			}
+			
+			String chk = request.getParameter("chk");
+			if (chk != null){
 		if (chk.equals("1")) {
-%>
+	%>
 	<script type="text/javascript">
 		alert("상품을 장바구니에 추가하였습니다.");
 	</script>	
 <%
-		}
+	}
 		else if (chk.equals("2")){
-%>
+	%>
 	<script type="text/javascript">
 		alert("판매자 아이디로는 상품을 구매하실 수 없습니다.");
 	</script>
 <%
-		}
+}
 		else if (chk.equals("0")){
 %>
 	<script type="text/javascript">
@@ -67,9 +67,9 @@
 		location.href="login/login";
 	</script>	
 <%
-		}
 	}
-%>
+			}
+	%>
 
 <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="../resources/css/style.css?ver=1.4">
@@ -91,7 +91,7 @@
                     <input type="button" class="btn btn-secondary col-3" value="레시피 등록" onclick="addrecipe()">
                     <h4 class="col-6"><%=ct%></h4>
                 </div>
-                <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 레시피 > <%=ct %></p>
+                <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 레시피 > <%=ct%></p>
             </div>
             <hr>
             <div>
@@ -105,22 +105,21 @@
             </div>
             <div class="row">
            	<%
-				
-           		for (int i = 0; i <rl.size(); i++) {
-           			int price = 0;
-           			recipelist rp = rl.get(i);           			
-           			if(rp.getR_category().equals(ct)){
-           				String[] foods = rp.getR_product().split(",");
-           				String[] food_unit = rp.getR_unit().split(",");
-           				for (int j = 0; j < foods.length; j++) {
-           					for (int x = 0; x < fp.size(); x++) {
-           						foodprice f_price = fp.get(x);           						
-           						if (foods[j].equals(f_price.getF_name())){           							
-           							price+= (f_price.getF_price()*Integer.parseInt(food_unit[j]));
-           							break;
-           						}
-           					}
-           				}
+           	for (int i = 0; i <rl.size(); i++) {
+           	           	           	           	           			int price = 0;
+           	           	           	           	           			RecipelistDto rp = rl.get(i);           			
+           	           	           	           	           			if(rp.getR_category().equals(ct)){
+           	           	           	           	           				String[] foods = rp.getR_product().split(",");
+           	           	           	           	           				String[] food_unit = rp.getR_unit().split(",");
+           	           	           	           	           				for (int j = 0; j < foods.length; j++) {
+           	           	           	           	           					for (int x = 0; x < fp.size(); x++) {
+           	           	           	           	           						FoodpriceDto f_price = fp.get(x);           						
+           	           	           	           	           						if (foods[j].equals(f_price.getF_name())){           							
+           	           	           	           	           							price+= (f_price.getF_price()*Integer.parseInt(food_unit[j]));
+           	           	           	           	           							break;
+           	           	           	           	           						}
+           	           	           	           	           					}
+           	           	           	           	           				}
            	%>
            		<div class="col-3">
            			<div>
@@ -154,6 +153,15 @@
             		}
             		if (maxpage > pagenum) {
             			maxpage = pagenum;
+            		}
+            		if (cnt % 20 == 0) {
+            			maxpage -= 1;
+            		}
+            		if (cnt == 0) {
+            			maxpage = 1;
+            		}
+            		if (maxpage < 5) {
+            			minpage = 0;
             		}
 
             		if (cupage == 1){

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.oneqna" %>
+<%@ page import="dto.OneqnaDto" %>
 
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600&family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <%
-	ArrayList<oneqna> onelist = (ArrayList<oneqna>)request.getAttribute("oneqnalist");
+ArrayList<OneqnaDto> onelist = (ArrayList<OneqnaDto>)request.getAttribute("oneqnalist");
 	int cupage = Integer.valueOf((String)request.getAttribute("page"));
 	
 	int min = 0;
@@ -37,6 +37,9 @@
 	}
 	if (totalpage == 0) {
 		max = 1;
+	}
+	if (max < 5) {
+		min = 0;
 	}
 %>
 <title>ChanggiFood-1:1 질문</title>
@@ -72,9 +75,9 @@
                             <th class="col-2">문의상태</th>
                         </tr>
                         <%
-                        	if(onelist != null){
-	                        	for(int i = 0; i < onelist.size(); i++) {
-	                        		oneqna one = onelist.get(i);
+                        if(onelist != null){
+                                                	                        	for(int i = 0; i < onelist.size(); i++) {
+                                                	                        		OneqnaDto one = onelist.get(i);
                         %>
                         <tr>
                             <td><%=one.getDate() %></td>

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,17 +14,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.ui.Model;
 
-import dto.barcodesearch;
-import dto.customer;
-import dto.foodmanage;
-import dto.orderlist;
-import dto.seller;
+import dto.BarcodesearchDto;
+import dto.CustomerDto;
+import dto.FoodmanageDto;
+import dto.OrderlistDto;
+import dto.SellerDto;
 
-public class loginDao {
+public class LoginDao {
 	
 	private JdbcTemplate jt;
 	
-	public loginDao(DataSource dataSource) {
+	public LoginDao(DataSource dataSource) {
 		this.jt = new JdbcTemplate(dataSource);
 	}
 	
@@ -41,6 +42,7 @@ public class loginDao {
 		String id2 = (String)session.getAttribute("seller");
 		String id = "";
 		String user = "";
+		String sql = "";
 		
 		if (id1 != null) {
 			id = id1;
@@ -50,9 +52,6 @@ public class loginDao {
 			id = id2;
 			user = "seller";
 		}
-		
-		String sql = "";
-		
 		if (user.equals("customer")) {
 			sql = "delete from customer where c_id=?";
 		}
@@ -74,23 +73,20 @@ public class loginDao {
 		else {
 			sql = "update seller set s_password=? where s_id=?";
 		}
+		
 		jt.update(sql, password, id);	
 	}
 
-	public int idsearch(String phone1, String phone2, String phone3, String mail, Model model) {
+	public int idsearch(Map<String,Object> requestValues, Model model) {
 		int ans = 0;
-		
 		ArrayList<String> ids = new ArrayList<String>();
+		String phone = requestValues.get("phone1") + "-" + requestValues.get("phone2") + "-" + requestValues.get("phone3");
+		String sql = "";
+		String sql2 = "";
 		
-		String phone = phone1 + "-" + phone2 + "-" + phone3;
 		if (phone.length() < 12) {
 			phone = "";
 		}
-		
-		
-		String sql = "";
-		String sql2 = "";
-
 		if (phone.equals("")) {
 			sql = "select c_id from customer where c_mail=? ";
 			List<String> result = jt.query(sql, new RowMapper<String>() {
@@ -98,7 +94,7 @@ public class loginDao {
 				@Override
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 					return rs.getString("c_id");
-				}}, mail);
+				}}, requestValues.get("mail"));
 			if (!result.isEmpty()) {
 				ans = 1;
 				ids = (ArrayList<String>) result;
@@ -110,7 +106,7 @@ public class loginDao {
 				@Override
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 					return rs.getString("s_id");
-				}}, mail);
+				}}, requestValues.get("mail"));
 			if (!result2.isEmpty()) {
 				ans = 1;
 				ids = (ArrayList<String>) result2;
@@ -118,7 +114,6 @@ public class loginDao {
 		}
 		else {
 			sql = "select c_id from customer where c_phone=? ";
-			
 			List<String> result = jt.query(sql, new RowMapper<String>() {
 
 				@Override
@@ -130,8 +125,7 @@ public class loginDao {
 				ans = 1;
 				ids = (ArrayList<String>) result;
 			}
-
-			
+		
 			sql2 = "select s_id from seller where s_phone=? ";
 			List<String> result2 = jt.query(sql2, new RowMapper<String>() {
 
@@ -144,30 +138,25 @@ public class loginDao {
 				ids = (ArrayList<String>) result2;
 			}
 		}
+		
 		 model.addAttribute("ans", ids);
 
 		return ans;
 	}
 
-	public int pwsearch(String id, String phone1, String phone2, String phone3, String mail, Model model) {
+	public int pwsearch(Map<String, Object> requestValues, Model model) {
 		int ans = 0;
-				
+		String user = "";
+		String sql = "";
+		String sql2 = "";
+		String phone = requestValues.get("phone1") + "-" + requestValues.get("phone2") + "-" + requestValues.get("phone3");
 		
-
-		String phone = phone1 + "-" + phone2 + "-" + phone3;
 		if (phone.length() < 12) {
 			phone = "";
 		}
-		
-		
-		String user = "";
-		
-		String sql = "";
-		String sql2 = "";
-
 		if (phone.equals("")) {
 			sql = "select count(*) from customer where c_mail=? and c_id=?";
-			Integer result = jt.queryForObject(sql, Integer.class, mail, id);
+			Integer result = jt.queryForObject(sql, Integer.class, requestValues.get("mail"), requestValues.get("id"));
 			
 			if (result == 1) {
 				ans = 1;
@@ -175,18 +164,16 @@ public class loginDao {
 			}
 			
 			sql2 = "select count(*) from seller where s_mail=? and s_id=?";
-			Integer result2 = jt.queryForObject(sql2, Integer.class, mail, id);
+			Integer result2 = jt.queryForObject(sql2, Integer.class, requestValues.get("mail"), requestValues.get("id"));
 			
 			if (result2 == 1) {
 				ans = 1;
 				user = "seller";
-			}
-
-			 
+			}			 
 		}
 		else {
 			sql = "select count(*) from customer where c_phone=? and c_id=?";
-			Integer result = jt.queryForObject(sql, Integer.class , phone, id);
+			Integer result = jt.queryForObject(sql, Integer.class , phone, requestValues.get("id"));
 			
 			if (result == 1) {
 				ans = 1;
@@ -194,15 +181,15 @@ public class loginDao {
 			}
 			
 			sql2 = "select count(*) from seller where s_phone=? and s_id=?";
-			Integer result2 = jt.queryForObject(sql2, Integer.class, phone, id);
+			Integer result2 = jt.queryForObject(sql2, Integer.class, phone, requestValues.get("id"));
 			
 			if (result2 == 1) {
 				ans = 1;
 				user = "seller";
 			}
-
 		}
-		model.addAttribute("id", id);
+		
+		model.addAttribute("id", requestValues.get("id"));
 		model.addAttribute("user", user);
 		
 		return ans;
@@ -212,11 +199,13 @@ public class loginDao {
 		String s_id = (String)session.getAttribute("seller");
 		String sql = "select count(*) from cusorder where o_s_id=?";
 		Integer result = jt.queryForObject(sql, Integer.class, s_id);
+		
 		return result;
 	}
 
 	public void ordersub(String[] orderchk, String[] orderid) {
 		String sql = "update cusorder set o_chk=1 where o_num = ?";
+		
 		for(int i = 0; i < orderchk.length; i++) {
 			if (orderchk[i].equals("on")) {
 				jt.update(sql, orderid[i]);
@@ -224,7 +213,7 @@ public class loginDao {
 		}
 	}
 
-	public List<orderlist> orderlist(HttpSession session , String order, String page) {
+	public List<OrderlistDto> orderlist(HttpSession session , String order, String page) {
 		String sql = "";
 		String s_id = (String)session.getAttribute("seller");
 		int SearchPage = (Integer.valueOf(page) - 1) * 10;  
@@ -236,11 +225,11 @@ public class loginDao {
 			sql = "select * from cusorder where o_s_id=? order by o_chk desc limit "+SearchPage+", 10";
 		}
 		
-		List<orderlist> orderlist = jt.query(sql, new RowMapper<orderlist>() {
+		List<OrderlistDto> orderlist = jt.query(sql, new RowMapper<OrderlistDto>() {
 
 			@Override
-			public dto.orderlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				orderlist ol = new orderlist();
+			public dto.OrderlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				OrderlistDto ol = new OrderlistDto();
 				ol.setId(rs.getInt("o_num"));
 				ol.setDate(rs.getString("o_date"));
 				ol.setF_singname(rs.getString("o_f_singname"));
@@ -253,86 +242,85 @@ public class loginDao {
 		return orderlist;
 	}
 
-	public void modi(HttpSession session, customer cus, String pwchk, String addr1, String addr2, String addr3) {
+	public void modi(HttpSession session, CustomerDto cus, Map<String, Object> reuquestValues) {
 
 		String id = cus.getId();
 		String name = cus.getName();
 		String phone = cus.getPhone();
 		String email = cus.getMail();
-		String addr = "("+addr1+")"+addr2+" "+addr3;
+		String addr = "("+reuquestValues.get("addr1")+")"+reuquestValues.get("addr2")+" "+reuquestValues.get("addr3");
 		String gender = cus.getGender();
-		
 		String sql = "";
-		customer cu = (customer)session.getAttribute("user");
+		
+		CustomerDto cu = (CustomerDto)session.getAttribute("user");
 		cu.setName(name);
 		
-		if (pwchk.equals("") && addr1.equals("() ")) {
+		if (reuquestValues.get("pwchk").equals("") && reuquestValues.get("addr1").equals("() ")) {
 			sql = "update customer set c_name=?, c_phone=?, c_gender=? ,c_mail=? where c_id=?";
 			jt.update(sql, name, phone, gender, email, id);
 			cu.setName(name);
 			cu.setPhone(phone);
 		}
-		else if (pwchk.equals("") && !addr1.equals("() ")) {
+		else if (reuquestValues.get("pwchk").equals("") && !reuquestValues.get("addr1").equals("() ")) {
 			sql = "update customer set c_name=?, c_phone=?, c_gender=?, c_addr=? ,c_mail=? where c_id=?";
 			jt.update(sql, name, phone, gender, addr, email, id);
 			cu.setAddr(addr);
 			cu.setName(name);
 			cu.setPhone(phone);
 		}
-		else if (!pwchk.equals("") && addr1.equals("() ")) {
+		else if (!reuquestValues.get("pwchk").equals("") && reuquestValues.get("addr1").equals("() ")) {
 			sql = "update customer set c_name=?, c_phone=?, c_gender=?, c_password=? ,c_mail=? where c_id=?";
-			jt.update(sql, name, phone, gender, pwchk, email, id);
+			jt.update(sql, name, phone, gender, reuquestValues.get("pwchk"), email, id);
 			cu.setName(name);
 			cu.setPhone(phone);
 		}
 		else {
 			sql = "update customer set c_name=?, c_phone=?, c_gender=?, c_addr=?, c_password=? ,c_mail=? where c_id=?";
-			jt.update(sql, name, phone, gender, addr, pwchk, email, id);
+			jt.update(sql, name, phone, gender, addr, reuquestValues.get("pwchk"), email, id);
 			cu.setAddr(addr);
 			cu.setName(name);
 			cu.setPhone(phone);
 		}
 	}
 
-	public void selmodi(seller sel, String pwchk, String addr1, String addr2, String addr3) {
+	public void selmodi(SellerDto sel, Map<String, Object> requestValues) {
 
 		String id = sel.getS_id();
 		String com_name = sel.getS_com_name();
 		String owner_name = sel.getS_owner_name();
 		String phone = sel.getS_phone();
 		String email = sel.getS_mail();
-		String addr = "("+addr1+")"+addr2+" "+addr3;
+		String addr = "("+requestValues.get("addr1")+")"+requestValues.get("addr2")+" "+requestValues.get("addr3");
 		
 		String sql = "";
 		
-		if (pwchk.equals("") && addr.equals("() ")) {
+		if (requestValues.get("pwchk").equals("") && addr.equals("() ")) {
 			sql = "update seller set s_com_name=?, s_owner_name=?, s_mail=?, s_phone=? where s_id=?";
 			jt.update(sql, com_name, owner_name, email, phone, id);
 		}
-		else if (pwchk.equals("") && !addr.equals("() ")) {
+		else if (requestValues.get("pwchk").equals("") && !addr.equals("() ")) {
 			sql = "update seller set s_com_name=?, s_owner_name=?, s_mail=?, s_phone=?, s_addr=? where s_id=?";
 			jt.update(sql, com_name, owner_name, email, phone, addr, id);
 		}
-		else if (!pwchk.equals("") && addr.equals("() ")) {
+		else if (!requestValues.get("pwchk").equals("") && addr.equals("() ")) {
 			sql = "update seller set s_com_name=?, s_owner_name=?, s_mail=?, s_phone=?, s_password=? where s_id=?";
-			jt.update(sql, com_name, owner_name, email, phone, pwchk, id);
+			jt.update(sql, com_name, owner_name, email, phone, requestValues.get("pwchk"), id);
 		}
 		else {
 			sql = "update seller set s_com_name=?,s_owner_name=?, s_mail=?, s_phone=?, s_addr=?, s_password=? where s_id=?";
-			jt.update(sql, com_name, owner_name, email, phone, addr, pwchk, id);
+			jt.update(sql, com_name, owner_name, email, phone, addr, requestValues.get("pwchk"), id);
 		}
 	}
 
-	public int selpwchk(HttpServletRequest request, String pw, Model model) {
-		HttpSession session = request.getSession();
+	public int selpwchk(HttpSession session, String pw, Model model) {
 		String id = (String)session.getAttribute("seller");
 		
 		String sql = "select s_com_name, s_com_number, s_owner_name, s_mail, s_phone, s_addr from seller where s_id = ? and s_password = ?";
-		List<seller> result = jt.query(sql, new RowMapper<seller>() {
+		List<SellerDto> result = jt.query(sql, new RowMapper<SellerDto>() {
 
 			@Override
-			public seller mapRow(ResultSet rs, int rowNum) throws SQLException {
-				seller sell = new seller();
+			public SellerDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				SellerDto sell = new SellerDto();
 				sell.setS_com_name(rs.getString("s_com_name"));
 				sell.setS_com_number(rs.getString("s_com_number"));
 				sell.setS_owner_name(rs.getString("s_owner_name"));
@@ -347,18 +335,17 @@ public class loginDao {
 		return ans;
 	}
 
-	public int pwchk(HttpServletRequest request, String pw, Model model) {
-		HttpSession session = request.getSession();
+	public int pwchk(HttpSession session, String pw, Model model) {
 		String id = (String)session.getAttribute("userid");
 		
 		
 		String sql = "select c_name, c_mail, c_phone, c_addr, c_gender from customer where c_id = ? and c_password = ?";
 	
-		List<customer> result = jt.query(sql, new RowMapper<customer>() {
+		List<CustomerDto> result = jt.query(sql, new RowMapper<CustomerDto>() {
 
 			@Override
-			public customer mapRow(ResultSet rs, int rowNum) throws SQLException {
-				customer ct = new customer();
+			public CustomerDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CustomerDto ct = new CustomerDto();
 				ct.setName(rs.getString("c_name"));
 				ct.setMail(rs.getString("c_mail"));
 				ct.setPhone(rs.getString("c_phone"));
@@ -439,34 +426,30 @@ public class loginDao {
 		return re_idchk;
 	}
 
-	public void signup(customer cus, String pw, String addr1, String addr2, String addr3, String year, String month, String day, String smark, String emark) {
+	public void signup(CustomerDto cus, Map<String, Object> requestValues) {
 		String id = cus.getId();
 		String name = cus.getName();
 		String email = cus.getMail();
 		String phone = cus.getPhone();
 		String gender = cus.getGender();
 
-		String birth = year + "-" + month + "-" + day;
-		String addr = "("+addr1+")"+addr2+" "+addr3;
-		
-		System.out.println("1" + id);
-		System.out.println("2" + name);
-		System.out.println("3" + email);
+		String birth = requestValues.get("year") + "-" + requestValues.get("month") + "-" + requestValues.get("day");
+		String addr = "("+requestValues.get("addr1")+")"+requestValues.get("addr2")+" "+requestValues.get("addr3");
 		
 		boolean smarkvalue = false, emarkvalue = false;
-		if (smark.equals("on")) {
+		if (requestValues.get("smark").equals("on")) {
 			smarkvalue = true;
 		}
-		if (emark.equals("on")) {
+		if (requestValues.get("emark").equals("on")) {
 			emarkvalue = true;
 		}
 
 		String sql = "insert into customer values (?,?,?,?,?,?,?,?,?,?,?,?)";
 		
-		jt.update(sql, id, pw, name, email, phone, addr, gender, birth, smarkvalue, emarkvalue, 0, "bronze");
+		jt.update(sql, id, requestValues.get("pw"), name, email, phone, addr, gender, birth, smarkvalue, emarkvalue, 0, "bronze");
 	}
 
-	public void seller_signup(seller sel, String pw, String addr1, String addr2, String addr3, String smark, String emark) {
+	public void seller_signup(SellerDto sel, Map<String, Object> requestValues) {
 		String id = sel.getS_id();
 		String name = sel.getS_com_name();
 		String number = sel.getS_com_number();
@@ -474,30 +457,30 @@ public class loginDao {
 		String mail = sel.getS_mail();
 		String phone = sel.getS_phone();
 
-		String addr = "("+addr1+")"+addr2+" "+addr3;
+		String addr = "("+requestValues.get("addr1")+")"+requestValues.get("addr2")+" "+requestValues.get("addr3");
 		
 		boolean smarkvalue = false, emarkvalue = false;
-		if (smark.equals("on")) {
+		if (requestValues.get("smark").equals("on")) {
 			smarkvalue = true;
 		}
-		if (emark.equals("on")) {
+		if (requestValues.get("emark").equals("on")) {
 			emarkvalue = true;
 		}
 		
 		String sql = "insert into seller values (?,?,?,?,?,?,?,?,?,?)";
 		
-		jt.update(sql, id, pw, name, number, ownername, mail, phone, addr, smarkvalue, emarkvalue);
+		jt.update(sql, id, requestValues.get("pw"), name, number, ownername, mail, phone, addr, smarkvalue, emarkvalue);
 	}
 
 	public boolean login(HttpSession session , String id, String pw) {
 		
 		boolean login_ans= false;
 		String sql = "select c_id, c_name, c_addr, c_point, c_class from customer where c_id=? and c_password=?";
-		List<customer> result = jt.query(sql, new RowMapper<customer>() {
+		List<CustomerDto> result = jt.query(sql, new RowMapper<CustomerDto>() {
 
 			@Override
-			public customer mapRow(ResultSet rs, int rowNum) throws SQLException {
-				customer dto = new customer();
+			public CustomerDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CustomerDto dto = new CustomerDto();
 				
 				dto.setId(rs.getString(1));
 				dto.setName(rs.getString(2));
@@ -561,7 +544,7 @@ public class loginDao {
 		return total;
 	}
 
-	public List<foodmanage> productmanage(String foodname, String page) {
+	public List<FoodmanageDto> productmanage(String foodname, String page) {
 		String sql = "";
 		int SearchPage = (Integer.valueOf(page)-1) * 10;
 		if (foodname == null) {
@@ -570,11 +553,11 @@ public class loginDao {
 		else {
 			sql = "select * from foodlist where f_name like '%"+foodname+"%' order by f_id desc limit "+SearchPage+", 10";
 		}
-		List<foodmanage> result = jt.query(sql, new RowMapper<foodmanage>() {
+		List<FoodmanageDto> result = jt.query(sql, new RowMapper<FoodmanageDto>() {
 
 			@Override
-			public foodmanage mapRow(ResultSet rs, int rowNum) throws SQLException {
-				foodmanage fm = new foodmanage();
+			public FoodmanageDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FoodmanageDto fm = new FoodmanageDto();
 				fm.setF_id(String.valueOf(rs.getInt("f_id")));
 				fm.setF_code(rs.getString("f_category"));
 				fm.setF_name(rs.getString("f_name"));
@@ -589,9 +572,6 @@ public class loginDao {
 	public int addchk(String name) {
 
 		int chk = 0;
-		
-		
-		
 		String sql = "select count(*) from foodlist where f_name=?";
 		chk = jt.queryForObject(sql, Integer.class, name);
 		
@@ -603,13 +583,13 @@ public class loginDao {
 			jt.update(sql, foodcate, name, price, unit);
 	}
 
-	public List<barcodesearch> f_search(String search) {
+	public List<BarcodesearchDto> f_search(String search) {
 		String sql = "select * from foodbarcode where fb_sub like '%"+search+"%'";
-		List<barcodesearch> result = jt.query(sql, new RowMapper<barcodesearch>() {
+		List<BarcodesearchDto> result = jt.query(sql, new RowMapper<BarcodesearchDto>() {
 
 			@Override
-			public barcodesearch mapRow(ResultSet rs, int rowNum) throws SQLException {
-				barcodesearch bs = new barcodesearch();
+			public BarcodesearchDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BarcodesearchDto bs = new BarcodesearchDto();
 				bs.setFb_main(rs.getString("fb_main"));
 				bs.setFb_middle(rs.getString("fb_middle"));
 				bs.setFb_sub(rs.getString("fb_sub"));

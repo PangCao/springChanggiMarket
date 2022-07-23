@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dao.CartDao;
 import dao.RecipeDao;
-import dto.foodprice;
-import dto.recipelist;
+import dto.FoodpriceDto;
+import dto.RecipelistDto;
 
 @Controller
 public class SpringRecipeController {
@@ -24,22 +24,22 @@ public class SpringRecipeController {
 	private RecipeDao dao;
 	
 	@RequestMapping("/recipe/recipes")
-	public String recipes(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String order, @RequestParam(value="r_category", required=false) String category, @RequestParam(required=false) String search_title, Model model) {
-		ArrayList<recipelist> fp = (ArrayList<recipelist>) dao.recipes(search_title, order, category, page);
-		ArrayList<foodprice> foodprice = (ArrayList<dto.foodprice>) dao.price();
+	public String recipes(@RequestParam(defaultValue = "1") String page, @RequestParam(required=false) String order, @RequestParam(required=false) String r_category, @RequestParam(required=false) String search_title, Model model) {
+		ArrayList<RecipelistDto> fp = (ArrayList<RecipelistDto>) dao.recipes(search_title, order, r_category, page);
+		ArrayList<FoodpriceDto> foodprice = (ArrayList<dto.FoodpriceDto>) dao.price();
 		model.addAttribute("page", page);
 		if (order != null && !order.equals("null")) {
 			if (order.equals("rowprice") || order.equals("highprice")) {
 				model.addAttribute("food", dao.orderprice(order, fp, foodprice));
 			}
 			else {
-				model.addAttribute("food", dao.recipes(search_title, order, category, page));
+				model.addAttribute("food", dao.recipes(search_title, order, r_category, page));
 			}
 		}
 		else {
-			model.addAttribute("food", dao.recipes(search_title, order, category, page));
+			model.addAttribute("food", dao.recipes(search_title, order, r_category, page));
 		}
-		model.addAttribute("cnt", dao.count(search_title, category));
+		model.addAttribute("cnt", dao.count(search_title, r_category));
 		model.addAttribute("foodprice", dao.price());
 		if (order != null && !order.equals("null")) {
 			model.addAttribute("order", order);
@@ -67,7 +67,7 @@ public class SpringRecipeController {
 		ra.addAttribute("page", page);
 		ra.addAttribute("order", order);
 		if (userchk == 1) {
-			ArrayList<foodprice> fp = (ArrayList<foodprice>) dao.price();
+			ArrayList<FoodpriceDto> fp = (ArrayList<FoodpriceDto>) dao.price();
 			dao.addCartIcon(session, id, fp);
 			model.addAttribute("foodprice", fp);
 			ra.addAttribute("chk", "1");
@@ -99,7 +99,7 @@ public class SpringRecipeController {
 	}
 	
 	@RequestMapping("/recipe/delrecipe")
-	public String delrecipe(String id, RedirectAttributes ra) {
+	public String delrecipe(@RequestParam String id, RedirectAttributes ra) {
 		dao.delrecipe(id);
 		ra.addAttribute("r_category", "밥·죽");
 		ra.addAttribute("page", "1");

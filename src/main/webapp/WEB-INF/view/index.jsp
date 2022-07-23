@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.recipelist" %>  
+<%@ page import="dto.RecipelistDto" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +17,7 @@
 <title>ChanggiFood-Home</title>
 </head>
 <%
-	if (request.getParameter("error") != null){
+if (request.getParameter("error") != null){
 		String error = request.getParameter("error");
 		if (error.equals("1")) {
 %>
@@ -25,9 +25,9 @@
 	alert("정상적으로 탈퇴되었습니다.");
 </script>
 <%
-		}
+}
 	}
-	ArrayList<recipelist> recom = (ArrayList<recipelist>)request.getAttribute("recomm");
+	ArrayList<RecipelistDto> recom = (ArrayList<RecipelistDto>)request.getAttribute("recomm");
 %>
 <body>
     <jsp:include page="/WEB-INF/view/menu.jsp"/>
@@ -94,8 +94,8 @@
                     <label for="sl1" class="right"><i class="fa-solid fa-angle-right"></i></label>
                 </div>
                 <%
-                	for (int i = 0; i < recom.size(); i++) {
-                		recipelist rl = recom.get(i);
+                for (int i = 0; i < recom.size(); i++) {
+                                                		RecipelistDto rl = recom.get(i);
                 %>
                 <div class="col-4 t">
                     <div>

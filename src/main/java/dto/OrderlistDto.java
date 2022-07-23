@@ -1,10 +1,7 @@
 package dto;
 
-import java.io.Serializable;
-
-public class orderlist implements Serializable{
-
-	private static final long serialVersionUID = 1L;
+public class OrderlistDto{
+	
 	private int id;
 	private String date;
 	private String f_name;

@@ -23,14 +23,12 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
 
-import dto.Cartfood;
-import dto.cartlist;
-import dto.customer;
-import dto.foodprice;
-import dto.marketDto;
+import dto.CartlistDto;
+import dto.CustomerDto;
+import dto.FoodpriceDto;
+import dto.MarketDto;
 
 public class CartDao {
 	
@@ -54,7 +52,7 @@ public class CartDao {
 	}
 	
 	public void seldel(HttpSession session, String[] food) {
-		ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+		ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 		int[] foods = new int[food.length];
 		
 		for (int j = 0; j < foods.length; j++) {
@@ -98,7 +96,7 @@ public class CartDao {
 		return cnt;
 	}
 	
-	public List<cartlist> mypage(HttpSession session, String orderperiod, String page) {
+	public List<CartlistDto> mypage(HttpSession session, String orderperiod, String page) {
 		String id = (String)session.getAttribute("userid");
 		
 
@@ -121,11 +119,11 @@ public class CartDao {
 		String s_date = ldt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String sql = "select * from cusorder where o_id=? and o_date > ? order by o_num desc limit "+SearchPage+", 10";
-		List<cartlist> result = jt.query(sql, new RowMapper<cartlist>() {
+		List<CartlistDto> result = jt.query(sql, new RowMapper<CartlistDto>() {
 
 			@Override
-			public cartlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				cartlist ca = new cartlist();
+			public CartlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CartlistDto ca = new CartlistDto();
 				ca.setNum(rs.getInt("o_num"));
 				ca.setFoodName(rs.getString("o_f_name"));
 				ca.setFoods(rs.getString("o_f_singname").split(","));
@@ -139,14 +137,14 @@ public class CartDao {
 		return result;
 	}
 
-	public List<foodprice> price(HttpServletRequest request) {
+	public List<FoodpriceDto> price(HttpServletRequest request) {
 
 		String sql = "select * from foodlist";
-		List<foodprice> result = jt.query(sql, new RowMapper<foodprice>() {
+		List<FoodpriceDto> result = jt.query(sql, new RowMapper<FoodpriceDto>() {
 
 			@Override
-			public foodprice mapRow(ResultSet rs, int rowNum) throws SQLException {
-				foodprice fp = new foodprice();
+			public FoodpriceDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FoodpriceDto fp = new FoodpriceDto();
 				fp.setF_name(rs.getString("f_name"));
 				fp.setF_price(rs.getInt("f_price"));
 				return null;
@@ -158,10 +156,10 @@ public class CartDao {
 	public void addCart(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		if (session.getAttribute("myCart") == null) {
-			ArrayList<cartlist> al = new ArrayList<cartlist>();
+			ArrayList<CartlistDto> al = new ArrayList<CartlistDto>();
 			session.setAttribute("myCart", al);
 		}
-		cartlist cl = new cartlist();
+		CartlistDto cl = new CartlistDto();
 		String name = request.getParameter("name");
 		int len = Integer.parseInt(request.getParameter("len"));
 		String[] foods = new String[len];
@@ -180,19 +178,19 @@ public class CartDao {
 		cl.setFoodprice(foodprice);
 		cl.setFilename(file);
 		cl.setNum(id);
-		ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+		ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 		al.add(cl);
 	}
 
 	public void sellcnt(HttpServletRequest request, String[] selchk) {
 		HttpSession session = request.getSession();
 		
-		ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+		ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 		String sql1 = "select r_sell from recipe where r_id = ?";
 		String sql2 = "update recipe set r_sell= ? where r_id = ?";
 		
 		for (int i = 0; i < al.size(); i++) {
-			cartlist ca = al.get(i);
+			CartlistDto ca = al.get(i);
 			if (selchk[i].equals("1")) {
 				int id = ca.getNum();
 				jt.query(sql1, new RowMapper<Integer>() {
@@ -288,8 +286,8 @@ public class CartDao {
 		}
 	}
 	
-	public List<marketDto> shipsel(HttpSession session, marketDto customerMarker) {
-		customer dto = (customer)session.getAttribute("user");
+	public List<MarketDto> shipsel(HttpSession session, MarketDto customerMarker) {
+		CustomerDto dto = (CustomerDto)session.getAttribute("user");
 		String addr = dto.getAddr();
 		String[] addrs = addr.split(" ");
 		String middle_addr = "";
@@ -301,26 +299,26 @@ public class CartDao {
 		}
 		
 		String sql = "select * from seller where s_addr like '%"+middle_addr+"%'";
-		List<marketDto> result = jt.query(sql, new RowMapper<marketDto>() {
+		List<MarketDto> result = jt.query(sql, new RowMapper<MarketDto>() {
 
 			@Override
-			public marketDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-				marketDto dt = new marketDto();
+			public MarketDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				MarketDto dt = new MarketDto();
 				dt.setId(rs.getString("s_id"));
 				dt.setAddr(rs.getString("s_addr"));
 				dt.setName(rs.getString("s_com_name"));
 				String subaddr = dt.getAddr().substring(dt.getAddr().indexOf(")")+1);
 				subaddr = subaddr.substring(0,subaddr.lastIndexOf(" "));
-				marketDto tmp = getGeoDataByAddress(subaddr);
+				MarketDto tmp = getGeoDataByAddress(subaddr);
 				if(tmp != null) {
 					dt.setX(tmp.getX());
 					dt.setY(tmp.getY());
 				}
 				return dt;
 			}});
-		ArrayList<marketDto> ans = new ArrayList<marketDto>();
+		ArrayList<MarketDto> ans = new ArrayList<MarketDto>();
 		for (int i = 0; i < result.size(); i++) {
-			marketDto dto2 = result.get(i);
+			MarketDto dto2 = result.get(i);
 			System.out.println(dto2.getX() +":"+ dto2.getY());
 			
 			if (customerMarker.getX()-0.02 <= dto2.getX() && dto2.getX() <= customerMarker.getX()+0.02 && customerMarker.getY()-0.02 <= dto2.getY() && dto2.getY() <= customerMarker.getY()+0.02) {
@@ -331,16 +329,16 @@ public class CartDao {
 		return ans;
 	}
 	
-	public marketDto customerMarker(HttpSession session) {
-		customer dto = (customer)session.getAttribute("user");
+	public MarketDto customerMarker(HttpSession session) {
+		CustomerDto dto = (CustomerDto)session.getAttribute("user");
 		String addr = dto.getAddr();
 		addr = addr.substring(addr.indexOf(")")+1);
 		addr = addr.substring(0, addr.lastIndexOf(" "));
-		marketDto result = getGeoDataByAddress(addr);
+		MarketDto result = getGeoDataByAddress(addr);
 		return result;
 	}
 
-	private marketDto getGeoDataByAddress(String completeAddress) {
+	private MarketDto getGeoDataByAddress(String completeAddress) {
 	       try {
 
 	    	   //api를 사용하기 위한 key 
@@ -401,7 +399,7 @@ public class CartDao {
 	               ret.put("lng", lng.toString());
 
 	               // dto를 생성한다. (값을 저장해서 반환하기 위해서 생성)
-	               marketDto dto = new marketDto();
+	               MarketDto dto = new MarketDto();
 
 	               // x값으로 lat, y값으로 lng을 set한다. 
 	               dto.setX(lat);

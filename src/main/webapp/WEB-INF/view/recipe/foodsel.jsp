@@ -1,4 +1,4 @@
-<%@page import="dto.foodmanage"%>
+<%@page import="dto.FoodmanageDto"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -9,7 +9,7 @@
 <meta charset="UTF-8">
 <title>ChanggiFood-재료 검색</title>
 <%
-	ArrayList<foodmanage> alf = (ArrayList<foodmanage>)request.getAttribute("foodlist");
+ArrayList<FoodmanageDto> alf = (ArrayList<FoodmanageDto>)request.getAttribute("foodlist");
 %>
 </head>
 <body>
@@ -23,9 +23,9 @@
 				<th class="col-3"></th>
 			</tr>
 			<%
-				if (alf != null) {
-					for (int i = 0; i < alf.size(); i++) {
-						foodmanage fm = alf.get(i);
+			if (alf != null) {
+							for (int i = 0; i < alf.size(); i++) {
+								FoodmanageDto fm = alf.get(i);
 			%>
 			<tr>
 				<td>

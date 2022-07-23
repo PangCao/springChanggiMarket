@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import dao.BoardDao;
 import dao.CartDao;
 import dao.RecipeDao;
-import dao.loginDao;
+import dao.LoginDao;
 
 @Configuration
 @EnableTransactionManagement
@@ -41,8 +41,8 @@ public class AppConfig {
 	}
 	
 	@Bean
-	public loginDao loginDao() {
-		return new loginDao(dataSource());
+	public LoginDao loginDao() {
+		return new LoginDao(dataSource());
 	}
 	
 	@Bean

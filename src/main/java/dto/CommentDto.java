@@ -1,9 +1,7 @@
 package dto;
 
-import java.io.Serializable;
-
-public class comment implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class CommentDto{
+	
 	private int bc_id; 
 	private String bc_writer;
 	private String bc_content;

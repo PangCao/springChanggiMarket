@@ -1,11 +1,6 @@
 package dto;
 
-import java.io.Serializable;
-
-public class seller implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-	
+public class SellerDto{
 	private String s_id;
 	private String s_com_name;
 	private String s_com_number;

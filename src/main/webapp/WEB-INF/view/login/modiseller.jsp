@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList"%>
-<%@ page import="dto.orderlist" %>
-<%@ page import="dto.seller" %>
+<%@ page import="dto.OrderlistDto" %>
+<%@ page import="dto.SellerDto" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 
-<%	
-	seller sellinfo = (seller)request.getAttribute("sellinfo");
+<%
+SellerDto sellinfo = (SellerDto)request.getAttribute("sellinfo");
 	String name = "";
 	
 	if (session.getAttribute("seller") != null) {

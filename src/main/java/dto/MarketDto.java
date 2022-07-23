@@ -1,6 +1,6 @@
 package dto;
 
-public class marketDto {
+public class MarketDto {
 	private String id;
 	private String addr;
 	private String name;

@@ -15,9 +15,9 @@
 <meta charset="UTF-8">
 <title>ChanggiFood-장바구니</title>
 <%
-	ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 	Map<String, Integer> cf = (HashMap<String, Integer>)request.getAttribute("foodchk");
-	customer cu = (customer)session.getAttribute("user");
+	CustomerDto cu = (CustomerDto)session.getAttribute("user");
 	if (al != null && al.size() > 0) {
 %>
 <script type="text/javascript">
@@ -34,7 +34,7 @@
 	}
 </script>
 <%
-	}
+}
 %>
 </head>
 <body>
@@ -58,14 +58,14 @@
                     </tr>
                     
                     <%
-                    	int totalsum = 0;
-                    	if(al != null){
-               		%>
+                                        int totalsum = 0;
+                                                                                                    	if(al != null){
+                                        %>
                    		<input type="hidden" name="foodlen" id="foodlen" value="<%=al.size()%>">
                		<%
-                    		for (int i = 0; i < al.size(); i++) {
-                    			cartlist ca = al.get(i);
-                    %>
+               		for (int i = 0; i < al.size(); i++) {
+               		               		                    			CartlistDto ca = al.get(i);
+               		%>
 
                     	<tr>
                     	<input type="hidden" value="1" id="selchk<%=i %>" name="selchk">

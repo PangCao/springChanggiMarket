@@ -17,10 +17,10 @@ import org.springframework.jdbc.core.RowMapper;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
-import dto.cartlist;
-import dto.foodmanage;
-import dto.foodprice;
-import dto.recipelist;
+import dto.CartlistDto;
+import dto.FoodmanageDto;
+import dto.FoodpriceDto;
+import dto.RecipelistDto;
 
 
 public class RecipeDao {
@@ -31,14 +31,14 @@ public class RecipeDao {
 		this.jt = new JdbcTemplate(dataSource);
 	}
 	
-	public List<recipelist> recom() {
+	public List<RecipelistDto> recom() {
 		String sql = "select * from recipe order by r_sell desc limit 5";
 		
-		List<recipelist> result = jt.query(sql, new RowMapper<recipelist>() {
+		List<RecipelistDto> result = jt.query(sql, new RowMapper<RecipelistDto>() {
 
 			@Override
-			public recipelist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				recipelist rl = new recipelist();
+			public RecipelistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				RecipelistDto rl = new RecipelistDto();
 				rl.setR_name(rs.getString("r_name"));
 				rl.setR_id(rs.getInt("r_id"));
 				rl.setR_category(rs.getString("r_category"));
@@ -57,17 +57,17 @@ public class RecipeDao {
 		jt.update(sql, id);
 	}
 
-	public List<recipelist> orderprice(String order, ArrayList<recipelist> fp, ArrayList<foodprice> foodprice) {
+	public List<RecipelistDto> orderprice(String order, ArrayList<RecipelistDto> fp, ArrayList<FoodpriceDto> foodprice) {
 		int[] price = new int[fp.size()];
 		for (int i = 0; i < fp.size(); i++) {
-			recipelist rl = fp.get(i);			
+			RecipelistDto rl = fp.get(i);			
 			String[] foodname = rl.getR_product().split(",");
 			String[] foodunit = rl.getR_unit().split(",");
 			for (int j = 0; j < foodname.length; j++) {
 				String name = foodname[j];
 				String unit = foodunit[j];
 				for (int x = 0; x < foodprice.size(); x++) {
-					foodprice fpri = foodprice.get(x);
+					FoodpriceDto fpri = foodprice.get(x);
 					if (fpri.getF_name().equals(name)) {
 						price[i] += fpri.getF_price() * Integer.valueOf(unit);
 						break;
@@ -93,7 +93,7 @@ public class RecipeDao {
 				}
 			}
 		}
-		ArrayList<recipelist> fp2 = new ArrayList<recipelist>();
+		ArrayList<RecipelistDto> fp2 = new ArrayList<RecipelistDto>();
 		if (order.equals("highprice")) {
 			for (int i = 0; i < fp.size(); i++) {
 				fp2.add(fp.get(priceindex[i]));
@@ -135,7 +135,7 @@ public class RecipeDao {
 		jt.update(sql, r_writer, r_cate, r_name, r_desc, r_product, r_unit, r_tip, r_img);
 	}
 	
-	public List<foodmanage> searchfood(String search) {
+	public List<FoodmanageDto> searchfood(String search) {
 		String sql = "";
 		if (search == null || search.equals("") || search.equals("null")) {
 			sql = "select * from foodlist";
@@ -143,11 +143,11 @@ public class RecipeDao {
 		else {
 			sql = "select * from foodlist where f_name like '%"+search+"%'";
 		}
-		List<foodmanage> result = jt.query(sql, new RowMapper<foodmanage>() {
+		List<FoodmanageDto> result = jt.query(sql, new RowMapper<FoodmanageDto>() {
 
 			@Override
-			public foodmanage mapRow(ResultSet rs, int rowNum) throws SQLException {
-				foodmanage fm = new foodmanage();
+			public FoodmanageDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FoodmanageDto fm = new FoodmanageDto();
 				fm.setF_code(String.valueOf(rs.getInt("f_id")));
 				fm.setF_code(rs.getString("f_category"));
 				fm.setF_name(rs.getString("f_name"));
@@ -172,17 +172,17 @@ public class RecipeDao {
 		return chk;	
 	}
 
-	public void addCartIcon(HttpSession session, String id, ArrayList<foodprice> fp) {
+	public void addCartIcon(HttpSession session, String id, ArrayList<FoodpriceDto> fp) {
 		if (session.getAttribute("myCart") == null) {
-			ArrayList<cartlist> al = new ArrayList<cartlist>();
+			ArrayList<CartlistDto> al = new ArrayList<CartlistDto>();
 			session.setAttribute("myCart", al);
 		}
 		String sql = "select * from recipe where r_id=?";
-		List<cartlist> result = jt.query(sql, new RowMapper<cartlist>() {
+		List<CartlistDto> result = jt.query(sql, new RowMapper<CartlistDto>() {
 
 			@Override
-			public cartlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				cartlist cl = new cartlist();
+			public CartlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CartlistDto cl = new CartlistDto();
 				String name = rs.getString("r_name");
 				String r_foods = rs.getString("r_product");
 				String r_foodnum = rs.getString("r_unit");
@@ -194,7 +194,7 @@ public class RecipeDao {
 				
 				for (int i = 0; i < foods.length; i++) {
 					for (int j = 0; j < fp.size(); j++) {
-						foodprice fpdto = fp.get(j);
+						FoodpriceDto fpdto = fp.get(j);
 						if(fpdto.getF_name().equals(foods[i])) {
 							foodprice[i] = String.valueOf(fpdto.getF_price());
 							break;
@@ -210,18 +210,18 @@ public class RecipeDao {
 				return cl;
 			}},id);
 
-			ArrayList<cartlist> al = (ArrayList<cartlist>)session.getAttribute("myCart");
+			ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart");
 			al.add(result.get(0));
 	}
 
-	public recipelist sel_recipe(int id) {
+	public RecipelistDto sel_recipe(int id) {
 
 		String sql = "select * from recipe where r_id=?";
-		List<recipelist> result = jt.query(sql, new RowMapper<recipelist>() {
+		List<RecipelistDto> result = jt.query(sql, new RowMapper<RecipelistDto>() {
 
 			@Override
-			public recipelist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				recipelist rp = new recipelist();
+			public RecipelistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				RecipelistDto rp = new RecipelistDto();
 				rp.setR_id(rs.getInt("r_id"));
 				rp.setR_writer(rs.getString("r_writer"));
 				rp.setR_category(rs.getString("r_category"));
@@ -252,7 +252,7 @@ public class RecipeDao {
 		return count;
 	}
 
-	public List<recipelist> recipes(String search_title, String order, String category, String page) {
+	public List<RecipelistDto> recipes(String search_title, String order, String r_category, String page) {
 		
 		String sql = "";
 	
@@ -281,11 +281,11 @@ public class RecipeDao {
 			}
 		}
 		
-		List<recipelist> result = jt.query(sql, new RowMapper<recipelist>() {
+		List<RecipelistDto> result = jt.query(sql, new RowMapper<RecipelistDto>() {
 
 			@Override
-			public recipelist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				recipelist rp = new recipelist();
+			public RecipelistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				RecipelistDto rp = new RecipelistDto();
 				rp.setR_writer(rs.getString("r_writer"));
 				rp.setR_id(rs.getInt("r_id"));
 				rp.setR_category(rs.getString("r_category"));
@@ -296,19 +296,19 @@ public class RecipeDao {
 				rp.setR_tip(rs.getString("r_tip"));
 				rp.setR_img(rs.getString("r_img"));
 				return rp;
-			}}, category);
+			}}, r_category);
 			
 		return result; 
 	}
 
-	public List<foodprice> price() {
+	public List<FoodpriceDto> price() {
 		
 		String sql = "select * from foodlist";
-		List<foodprice> result = jt.query(sql, new RowMapper<foodprice>() {
+		List<FoodpriceDto> result = jt.query(sql, new RowMapper<FoodpriceDto>() {
 
 			@Override
-			public foodprice mapRow(ResultSet rs, int rowNum) throws SQLException {
-				foodprice fp = new foodprice();
+			public FoodpriceDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FoodpriceDto fp = new FoodpriceDto();
 				fp.setF_name(rs.getString("f_name"));
 				fp.setF_price(rs.getInt("f_price"));
 				return fp;

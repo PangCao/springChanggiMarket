@@ -1,11 +1,6 @@
 package dto;
 
-import java.io.Serializable;
-
-public class oneqna implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-	
+public class OneqnaDto{
 	private int id;
 	private String title;
 	private String writer;

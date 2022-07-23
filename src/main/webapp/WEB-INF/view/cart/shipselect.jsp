@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.marketDto" %>
+<%@ page import="dto.MarketDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
 
 <%
-	ArrayList<marketDto> marketlist = (ArrayList<marketDto>)request.getAttribute("marketlist");
-	marketDto customerMarker = (marketDto)request.getAttribute("customerMarker");
+ArrayList<MarketDto> marketlist = (ArrayList<MarketDto>)request.getAttribute("marketlist");
+	MarketDto customerMarker = (MarketDto)request.getAttribute("customerMarker");
 	String num = (String)request.getAttribute("num");
 %>
 <meta charset="UTF-8">
@@ -28,12 +28,12 @@
 				</tr>
 				<%
 				if (marketlist != null && marketlist.size() != 0){
-					for(int i = 0; i < marketlist.size(); i++){
-						marketDto dto = marketlist.get(i);
+							for(int i = 0; i < marketlist.size(); i++){
+								MarketDto dto = marketlist.get(i);
 				%>
 				<tr>
-					<td><%=dto.getName() %></td>
-					<td><a href="#" onclick="panTo<%=i%>()"><%=dto.getAddr() %></a></td>
+					<td><%=dto.getName()%></td>
+					<td><a href="#" onclick="panTo<%=i%>()"><%=dto.getAddr()%></a></td>
 					<td><input type="button" value="선택" onclick="shipsel<%=i%>()" class="btn btn-danger"></td>
 					<input type="hidden" value="<%=dto.getId()%>" id="s_id<%=i%>">
 				</tr>
@@ -54,9 +54,9 @@
 					}        
 				</script>
 				<%
-					}
 				}
-				else {
+						}
+						else {
 				%>
 				<tr>
 					<td></td>
@@ -64,7 +64,7 @@
 					<td></td>
 				</tr>
 				<%
-					}
+				}
 				%>
 			</table>
 		</div>
@@ -99,12 +99,10 @@
 	marker.setMap(map);
 	
 	var positions = [
-		<%
-		if (marketlist != null) {
+		<%if (marketlist != null) {
 			for(int i = 0; i < marketlist.size(); i++) {
-				marketDto dto = marketlist.get(i);
-				if(i == marketlist.size()) {
-		%>
+				MarketDto dto = marketlist.get(i);
+				if(i == marketlist.size()) {%>
     	{
         	content: '<div style="text-align: center; width:150px;"><%=dto.getName()%></div>', 
         	latlng: new kakao.maps.LatLng(<%=dto.getX()%>,<%=dto.getY()%>)

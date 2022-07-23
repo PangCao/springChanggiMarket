@@ -1,10 +1,6 @@
 package dto;
 
-import java.io.Serializable;
-
-public class foodmanage implements Serializable{
-
-	private static final long serialVersionUID = 1L;
+public class FoodmanageDto{
 	private String f_id;
 	private String f_code;
 	private String f_name;

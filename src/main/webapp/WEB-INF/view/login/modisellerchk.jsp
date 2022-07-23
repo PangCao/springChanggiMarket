@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList"%>
-<%@ page import="dto.orderlist" %>
+<%@ page import="dto.OrderlistDto" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 
-<%	
-	String order = request.getParameter("order");
-	ArrayList<orderlist> alo = (ArrayList<orderlist>)request.getAttribute("orderlist");
+<%
+String order = request.getParameter("order");
+	ArrayList<OrderlistDto> alo = (ArrayList<OrderlistDto>)request.getAttribute("orderlist");
 	String name = "";
 	
 	if (session.getAttribute("seller") != null) {

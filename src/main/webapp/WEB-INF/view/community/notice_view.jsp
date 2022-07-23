@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.Boardlist" %>
+<%@ page import="dto.BoardlistDto" %>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.comment" %>
+<%@ page import="dto.CommentDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,13 +16,13 @@
 <meta charset="UTF-8">
 <title>ChanggiFood-BoardView</title>
 <%
-	ArrayList<comment> alc = (ArrayList<comment>)request.getAttribute("commentlist");
+ArrayList<CommentDto> alc = (ArrayList<CommentDto>)request.getAttribute("commentlist");
 	int alcsize = 0;
 	System.out.println(alc.size());
 	if (alc != null) {
 		alcsize = alc.size();
 	}
-	Boardlist bl = (Boardlist)request.getAttribute("viewInfo");
+	BoardlistDto bl = (BoardlistDto)request.getAttribute("viewInfo");
 	String userid = (String)session.getAttribute("userid");
 	String writer = bl.getWriter();
  	int cupage = Integer.valueOf((String)request.getAttribute("page"));
@@ -59,58 +59,59 @@
 	<jsp:include page="../menu.jsp"/>
 	<section class="bo_view">
         <div class="container">
-            <h5><small><%=sub_title %></small></h5>
-            <h3><%=category %></h3>
+            <h5><small><%=sub_title%></small></h5>
+            <h3><%=category%></h3>
             <hr>
-            <h3><%=bl.getTitle() %></h3>
+            <h3><%=bl.getTitle()%></h3>
             <hr>
             <div>
                 <div class="row">
-                    <p><i class="fa-solid fa-pen"></i>&nbsp;<%=bl.getWriter() %></p>
-                    <p><i class="fa-solid fa-eye"></i>&nbsp; <%=bl.getHit() %></p>
+                    <p><i class="fa-solid fa-pen"></i>&nbsp;<%=bl.getWriter()%></p>
+                    <p><i class="fa-solid fa-eye"></i>&nbsp; <%=bl.getHit()%></p>
                 </div>
                 <div>
-                    <p><%=bl.getDate() %></p>
+                    <p><%=bl.getDate()%></p>
                 </div>
             </div>
             <div class="row d-flex justify-content-center mb-5">
-            <%	if (!category.equals("1:1 문의")){
-	            	for (int i = 0; i < bl.getImg().length; i++){
-	            		if (!(bl.getImg()[i].equals("")) && bl.getImg()[i] != null){
+            <%
+            if (!category.equals("1:1 문의")){
+                        	            	for (int i = 0; i < bl.getImg().length; i++){
+                        	            		if (!(bl.getImg()[i].equals("")) && bl.getImg()[i] != null){
             %>
             	<img alt="" src="../resources/images/<%=bl.getImg()[i]%>" class="mx-1" style="width: 19%">
             <%
-	            		}
-	            	}
-	            }
-			%>
+            }
+                        	            	}
+                        	            }
+            %>
 			</div>
-            <p style="white-space: normal;"><%=bl.getContent() %></p>
+            <p style="white-space: normal;"><%=bl.getContent()%></p>
             <hr>
-            <p><i class="fa-solid fa-comment"></i>&nbsp; <%=alcsize %></p>
+            <p><i class="fa-solid fa-comment"></i>&nbsp; <%=alcsize%></p>
            
             <%
-            	if (userid != null){
-            %>
+                       if (userid != null){
+                       %>
             <form class="row d-flex justify-content-between mb-5 form-group" method="post" action="comment?category=<%=category%>&id=<%=id%>&page=<%=cupage%>">
             	<input type="text" class="col-10 form-control" name="comment">
             	<input type="submit" class="btn btn-success px-5 col-2" style="max-width: 15%;" value="댓글 달기">
            	</form>
             <%
-            	}
-            	else{
+            }
+                                    	else{
             %>
             <div id="comment">
                 <p>로그인한 회원만 댓글 등록이 가능합니다.</p>
             </div>
             <%
-            	}
+            }
             %>
              <div class="col-12 mb-5">
             <%
-            	if (alc != null) {
-            		for (int i = 0; i < alc.size(); i++){
-            			comment cm = alc.get(i);
+            if (alc != null) {
+                                    		for (int i = 0; i < alc.size(); i++){
+                                    			CommentDto cm = alc.get(i);
             %>
             	<div class="row col-12 mb-2" style="border-bottom: 1px solid rgba(0,0,0,.1);">
             		<p class="col-12"><%=cm.getBc_content() %></p>

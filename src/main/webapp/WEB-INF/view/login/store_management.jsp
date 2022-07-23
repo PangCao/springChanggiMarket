@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList"%>
-<%@ page import="dto.orderlist" %>
+<%@ page import="dto.OrderlistDto" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 
-<%	
-	String order = (String)request.getAttribute("order");
-	ArrayList<orderlist> alo = (ArrayList<orderlist>)request.getAttribute("orderlist");
+<%
+String order = (String)request.getAttribute("order");
+	ArrayList<OrderlistDto> alo = (ArrayList<OrderlistDto>)request.getAttribute("orderlist");
 	String name = "";
 	int cupage = 1;
 	int totalpage = 1;
@@ -29,8 +29,14 @@
 	if (max > (totalpage/10)+1) {
 		max = (totalpage/10)+1;
 	}
-	if (totalpage != 0 && totalpage % 10 == 0) {
+	if (totalpage % 10 == 0) {
 		max -= 1;
+	}
+	if (max < 5) {
+		min = 0;
+	}
+	if (totalpage == 0) {
+		max = 1;
 	}
 	if (session.getAttribute("seller") != null) {
 		name = (String)session.getAttribute("seller");
@@ -55,7 +61,7 @@
             </div>
             <div class="container">
                 <i class="fa-solid fa-user"></i>
-                <h5>안녕하세요. <%=name %> 님</h5>
+                <h5>안녕하세요. <%=name%> 님</h5>
             </div>
         </div>
         <div class="container">
@@ -77,22 +83,22 @@
                         </div>
                         
                         <%
-                        	if (order.equals("waiting")){
-                        %>
+                                                if (order.equals("waiting")){
+                                                %>
                         <select name="" class="form-control col-3" onchange="compleorder()">
                         	<option selected>접수 대기</option>
                         	<option>접속 완료</option>
                        	</select>
                        	<%
-                        	}
-                        	else {
+                       	}
+                       	                       	                        	else {
                        	%>
                        	<select name="" class="form-control col-3" onchange="waitorder()">
                        		<option >접수 대기</option>
                         	<option selected>접수 완료</option>
                        	</select>
                        	<%
-                        	}
+                       	}
                        	%>
                     </div>
                     <table class="table">
@@ -105,11 +111,11 @@
                             <th>접수상태</th>
                         </tr>
                         <%
-                          	if(alo != null){
-                          		for(int i = 0; i < alo.size(); i++) {
-                          			orderlist ol = alo.get(i);
-                          			String[] f_name = ol.getF_singname().split(",");
-                          			String[] f_unit = ol.getF_singunit().split(",");
+                        if(alo != null){
+                                                                          		for(int i = 0; i < alo.size(); i++) {
+                                                                          			OrderlistDto ol = alo.get(i);
+                                                                          			String[] f_name = ol.getF_singname().split(",");
+                                                                          			String[] f_unit = ol.getF_singunit().split(",");
                         %>
                         <tr>
                         	<%

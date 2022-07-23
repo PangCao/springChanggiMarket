@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
-<%@ page import="dto.foodmanage" %>
+<%@ page import="dto.FoodmanageDto" %>
 <%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
@@ -36,8 +36,8 @@
 </script>
 <title>ChanggiFood-상품관리</title>
 <%
-	String addchk = request.getParameter("addchk");
-	ArrayList<foodmanage> alf = (ArrayList<foodmanage>)request.getAttribute("foodmanage");
+String addchk = request.getParameter("addchk");
+	ArrayList<FoodmanageDto> alf = (ArrayList<FoodmanageDto>)request.getAttribute("foodmanage");
 	int cupage = 1;
 	if (request.getAttribute("page") != null) { 
 		cupage = Integer.valueOf((String)request.getAttribute("page"));
@@ -59,6 +59,12 @@
 	if (totalpage % 10 == 0) {
 		max -= 1;
 	}
+	if (max < 5) {
+		min = 0;
+	}
+	if (totalpage == 0) {
+		max = 1;
+	}
 	
 	if (addchk != null && addchk.equals("1")){
 %>
@@ -66,7 +72,7 @@
 		alert("이미 존재하는 상품입니다.");
 	</script>
 <%
-	}
+}
 %>
 <script type="text/javascript">
 	function addfoodbtn(){
@@ -119,7 +125,7 @@
                     <a onclick="food_search()"><i class="fa-solid fa-magnifying-glass"></i></a>
                 </form>
             </div>
-            <form action="addfood?page=<%=cupage %>" method="post" name="addfoodForm">
+            <form action="addfood?page=<%=cupage%>" method="post" name="addfoodForm">
                 <table class="table text-center">
                     <tr>
                         <th class="col-1 align-bottom">번호</th>
@@ -150,8 +156,8 @@
                         </th>
                     </tr>
                     <%
-                    	for (int i = 0; i < alf.size(); i++) {
-                    		foodmanage fm = alf.get(i);
+                    for (int i = 0; i < alf.size(); i++) {
+                                                            		FoodmanageDto fm = alf.get(i);
                     %>
 	                    <tr>
 	                        <td style="vertical-align: middle;"><p class="m-0 text-center"><%=((cupage-1)*10)+i+1%></p></td>

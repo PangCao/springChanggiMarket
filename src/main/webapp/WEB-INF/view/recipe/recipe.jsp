@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.recipelist" %>
-<%@ page import="dto.foodprice" %>
+<%@ page import="dto.RecipelistDto" %>
+<%@ page import="dto.FoodpriceDto" %>
 <%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
 <%
-	String userid = (String)session.getAttribute("userid");
+String userid = (String)session.getAttribute("userid");
 	String id = request.getParameter("id");
 	request.setCharacterEncoding("utf-8");
-	recipelist rp = (recipelist)request.getAttribute("sel_recipe");
+	RecipelistDto rp = (RecipelistDto)request.getAttribute("sel_recipe");
 	String writer = rp.getR_writer();
-	ArrayList<foodprice> fp = (ArrayList<foodprice>)request.getAttribute("foodprice");
+	ArrayList<FoodpriceDto> fp = (ArrayList<FoodpriceDto>)request.getAttribute("foodprice");
 	String addchk = request.getParameter("add");
 	if (addchk != null) {
 %>
@@ -20,7 +20,7 @@
 		alert("카트에 상품이 추가되었습니다.");
 	</script>
 <%
-	}
+}
 %>
 <link rel="stylesheet" href="../resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="../resources/css/style.css?ver=1.3">
@@ -37,26 +37,26 @@
 	<jsp:include page="../menu.jsp"/>
 	<section class="recipe">
         <div class="container">
-            <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 레시피 > <%= rp.getR_category()%></p>
+            <p><i class="fa-solid fa-house"></i>&nbsp;HOME > 레시피 > <%=rp.getR_category()%></p>
             <hr>
             <div class="row">
                 <div class="col-6">
-                    <img src="../resources/images/<%=rp.getR_img() %>" alt="" class="col-12">
+                    <img src="../resources/images/<%=rp.getR_img()%>" alt="" class="col-12">
                 </div>
                 <div class="col-6">
                 <div class="row d-flex justify-content-between" style="padding-right:15px;">
-                    <h3 class="col-6"><%=rp.getR_name() %></h3>
+                    <h3 class="col-6"><%=rp.getR_name()%></h3>
                         <%
-			            	if(userid != null && userid.equals(writer)) { 
-			            %>
+                        if(userid != null && userid.equals(writer)) {
+                        %>
 			            	<input type="button" onclick="recipedel()" value="레시피 삭제" class="btn btn-danger col-3">
 			            <%
-			            	}
+			            }
 			            %>
                 </div>
                     
                     <hr>
-                    <h5><%=rp.getR_desc() %></h5>
+                    <h5><%=rp.getR_desc()%></h5>
                     <hr>
                     <div class="row">
                         <h5 class="col-4">배송비</h5>
@@ -71,33 +71,33 @@
                                 <th class="col-4 text-right">상품가격</th>
                             </tr>
                             <%
-                            	String[] foods = rp.getR_product().split(",");
-                            	String[] foodunit = rp.getR_unit().split(",");
-                            	int sum_price = 0;
-                            	int foodlen = foods.length;
-                            	int priceviewValue = 0;
-                            	int foodnumValue = 0;
-                            	int max = 999;
-                            	for (int i = 0; i < foods.length; i++) {
-                                	int fo_price = 0;                                	
-                            		for (int j = 0; j < fp.size(); j++) {
-                            			foodprice f_price = fp.get(j);
-                            			if (foods[i].equals(f_price.getF_name())){
-                            				fo_price = f_price.getF_price();
-                            				sum_price += fo_price*Integer.parseInt(foodunit[i]);
-                            				break;
-                            			}
-                            		}
-                            		if (fo_price == 0) {
-                            			priceviewValue = 0;
-                            			foodnumValue = 0;
-                            			max = 0;
-                            		}
-                            		else {
-                            			priceviewValue = fo_price*Integer.valueOf(foodunit[i]);
-                            			foodnumValue = Integer.valueOf(foodunit[i]);
-                            			max = 999;
-                            		}
+                            String[] foods = rp.getR_product().split(",");
+                                                                                    	String[] foodunit = rp.getR_unit().split(",");
+                                                                                    	int sum_price = 0;
+                                                                                    	int foodlen = foods.length;
+                                                                                    	int priceviewValue = 0;
+                                                                                    	int foodnumValue = 0;
+                                                                                    	int max = 999;
+                                                                                    	for (int i = 0; i < foods.length; i++) {
+                                                                                        	int fo_price = 0;                                	
+                                                                                    		for (int j = 0; j < fp.size(); j++) {
+                                                                                    			FoodpriceDto f_price = fp.get(j);
+                                                                                    			if (foods[i].equals(f_price.getF_name())){
+                                                                                    				fo_price = f_price.getF_price();
+                                                                                    				sum_price += fo_price*Integer.parseInt(foodunit[i]);
+                                                                                    				break;
+                                                                                    			}
+                                                                                    		}
+                                                                                    		if (fo_price == 0) {
+                                                                                    			priceviewValue = 0;
+                                                                                    			foodnumValue = 0;
+                                                                                    			max = 0;
+                                                                                    		}
+                                                                                    		else {
+                                                                                    			priceviewValue = fo_price*Integer.valueOf(foodunit[i]);
+                                                                                    			foodnumValue = Integer.valueOf(foodunit[i]);
+                                                                                    			max = 999;
+                                                                                    		}
                             %>
                             <tr class="form-group">
                             	<input type="hidden" value=<%=rp.getR_id() %> name="foodid">

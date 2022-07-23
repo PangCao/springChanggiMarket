@@ -19,9 +19,9 @@ import org.springframework.jdbc.core.RowMapper;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
-import dto.Boardlist;
-import dto.comment;
-import dto.oneqna;
+import dto.BoardlistDto;
+import dto.CommentDto;
+import dto.OneqnaDto;
 
 public class BoardDao {
 	
@@ -92,7 +92,7 @@ public class BoardDao {
 		return nextpage;
 	}
 		
-	public List<comment> commentsearch(String category, String id) {
+	public List<CommentDto> commentsearch(String category, String id) {
 		int nid = Integer.valueOf(id);
 		if (category.equals("나만의 레시피")) {
 			category = "r_review";
@@ -105,11 +105,11 @@ public class BoardDao {
 		}
 		String sql = "select * from b_comment where bc_name=? and bc_id=? order by bc_num desc";
 		
-		List<comment> results = jdbcTemplate.query(sql,new RowMapper<comment>() {
+		List<CommentDto> results = jdbcTemplate.query(sql,new RowMapper<CommentDto>() {
 
 			@Override
-			public dto.comment mapRow(ResultSet rs, int rowNum) throws SQLException {
-				comment cm = new comment();
+			public dto.CommentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CommentDto cm = new CommentDto();
 				cm.setBc_id(rs.getInt("bc_num"));
 				cm.setBc_writer(rs.getString("bc_writer"));
 				cm.setBc_date(rs.getString("bc_date"));
@@ -194,16 +194,16 @@ public class BoardDao {
 		return likechk;
 	}	
 	
-	public List<oneqna> one(String page) {
+	public List<OneqnaDto> one(String page) {
 		int SearchPage = (Integer.valueOf(page) - 1) * 10;
 		
 		String sql = "select * from one_qna order by oq_id desc limit "+SearchPage+", 10";
 		
-		List<oneqna> results= jdbcTemplate.query(sql, new RowMapper<oneqna>() {
+		List<OneqnaDto> results= jdbcTemplate.query(sql, new RowMapper<OneqnaDto>() {
 
 			@Override
-			public oneqna mapRow(ResultSet rs, int rowNum) throws SQLException {
-				oneqna oq = new oneqna();
+			public OneqnaDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				OneqnaDto oq = new OneqnaDto();
 				oq.setId(rs.getInt("oq_id"));
 				oq.setTitle(rs.getString("oq_title"));
 				oq.setWriter(rs.getString("oq_writer"));
@@ -218,7 +218,7 @@ public class BoardDao {
 	}
 	
 	
-	public List<Boardlist> bulletin(String search_title, String page) {
+	public List<BoardlistDto> bulletin(String search_title, String page) {
 		String sql = "";
 		int SearchPage = (Integer.valueOf(page)-1)*10;
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
@@ -227,11 +227,11 @@ public class BoardDao {
 		else {
 			sql = "select * from bulletin where b_title like '%"+search_title+"%' order by b_id desc limit "+SearchPage+", 10";
 		}
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(rs.getString("b_id"));
 				bl.setTitle(rs.getString("b_title"));
 				bl.setWriter(rs.getString("b_writer"));
@@ -245,14 +245,14 @@ public class BoardDao {
 		return results;
 	}
 		
-	public Boardlist recipe_view(String id) {
+	public BoardlistDto recipe_view(String id) {
 		
 		String sql = "select * from r_review where r_id=?";
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(id);
 				bl.setTitle(rs.getString("r_title"));
 				bl.setWriter(rs.getString("r_writer"));
@@ -269,14 +269,14 @@ public class BoardDao {
 	}
 	
 	
-	public Boardlist oneview(String id) {
+	public BoardlistDto oneview(String id) {
 			
 		String sql = "select * from one_qna where oq_id=?";
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(id);
 				bl.setTitle(rs.getString("oq_title"));
 				bl.setWriter(rs.getString("oq_writer"));
@@ -291,14 +291,14 @@ public class BoardDao {
 		return results.get(0);
 	}
 	
-	public Boardlist bulletinview(String id) {	
+	public BoardlistDto bulletinview(String id) {	
 			
 		String sql = "select * from bulletin where b_id=?";
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(id);
 				bl.setTitle(rs.getString("b_title"));
 				bl.setWriter(rs.getString("b_writer"));
@@ -314,13 +314,13 @@ public class BoardDao {
 		return results.get(0);
 	}
 	
-	public Boardlist noticeview(String id) {
+	public BoardlistDto noticeview(String id) {
 		String sql = "select * from notice where n_id=?";
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(id);
 				bl.setTitle(rs.getString("n_title"));
 				bl.setWriter(rs.getString("n_writer"));
@@ -397,7 +397,7 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> faq(String search_title, String page) {
+	public List<BoardlistDto> faq(String search_title, String page) {
 		String sql = "";
 		
 		int SearchPage = (Integer.valueOf(page) - 1) * 10;
@@ -407,11 +407,11 @@ public class BoardDao {
 		else {
 			sql = "select * from faq where f_title like '%"+search_title+"%' order by f_id desc limit "+SearchPage+", 10";
 		}
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(rs.getString("f_id"));
 				bl.setTitle(rs.getString("f_title"));
 				bl.setContent(rs.getString("f_content"));
@@ -421,7 +421,7 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> review(String search_title, String page) {
+	public List<BoardlistDto> review(String search_title, String page) {
 		String sql = "";
 		
 		int SearchPage = (Integer.valueOf(page) - 1) * 8;
@@ -432,11 +432,11 @@ public class BoardDao {
 		else {
 			sql = "select * from r_review where r_title like '%"+search_title+"%' order by r_id desc limit "+SearchPage+", 8";
 		}
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(rs.getString("r_id"));
 				bl.setTitle(rs.getString("r_title"));
 				bl.setWriter(rs.getString("r_writer"));
@@ -451,7 +451,7 @@ public class BoardDao {
 		return results;
 	}
 	
-	public List<Boardlist> notice(String search_title, String page) {
+	public List<BoardlistDto> notice(String search_title, String page) {
 		String sql = "";
 		int SearchPage = (Integer.valueOf(page)-1) * 10;
 		if (search_title == null || search_title.equals("") || search_title.equals("null")) {
@@ -460,11 +460,11 @@ public class BoardDao {
 		else {
 			sql = "select * from notice where n_title like '%"+search_title+"%' order by n_id desc limit "+SearchPage+", 10";
 		}
-		List<Boardlist> results = jdbcTemplate.query(sql, new RowMapper<Boardlist>() {
+		List<BoardlistDto> results = jdbcTemplate.query(sql, new RowMapper<BoardlistDto>() {
 
 			@Override
-			public Boardlist mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Boardlist bl = new Boardlist();
+			public BoardlistDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+				BoardlistDto bl = new BoardlistDto();
 				bl.setId(rs.getString("n_id"));
 				bl.setTitle(rs.getString("n_title"));
 				bl.setWriter(rs.getString("n_writer"));

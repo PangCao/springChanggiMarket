@@ -1,6 +1,6 @@
 package dto;
 
-public class Cartfood {
+public class CartfoodDto {
 
 	private String foodname;
 	private int foodunit;

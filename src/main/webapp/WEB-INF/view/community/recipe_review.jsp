@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.*" %>
-<%@ page import="dto.Boardlist" %>
+<%@ page import="dto.BoardlistDto" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600&family=Noto+Sans+KR&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <%
-	request.setCharacterEncoding("utf-8");
+request.setCharacterEncoding("utf-8");
 	response.setContentType("text/html; charset=UTF-8");
 	String likechk = request.getParameter("likechk");
 	if(likechk != null && likechk.equals("1")){
@@ -25,31 +25,31 @@
 	document.location.href="#p_move";
 </script>
 <%
-	}
-	else if (likechk != null && likechk.equals("-1")){		
+}
+	else if (likechk != null && likechk.equals("-1")){
 %>
 	<script type="text/javascript">
 		alert("like를 하기 위해서 로그인이 필요합니다.");
 		location.href="<c:url value="/login/login"/>";
 	</script>
 <%
-	}
+}
 	else if(likechk != null && likechk.equals("2")){
 %>
 	<script type="text/javascript">
 		alert("판매자 아이디로는 like를 주실수 없습니다.");
 	</script>
-<%	
-	}
+<%
+}
 	else if (likechk != null && likechk.equals("3")) {
 %>
 	<script type="text/javascript">
 		alert("선택하신 레시피에 like가 +1 되었습니다.");
 	</script>
 <%
-	}
+}
 	String search_title = request.getParameter("search_title");
-	ArrayList<Boardlist> al = (ArrayList<Boardlist>)request.getAttribute("review_list");
+	ArrayList<BoardlistDto> al = (ArrayList<BoardlistDto>)request.getAttribute("review_list");
 	int cupage = Integer.valueOf((String)request.getAttribute("page"));
 	int min = 0; 
 	int max = 5;
@@ -69,6 +69,9 @@
 	}
 	if (totalpage == 0) {
 		max = 1;
+	}
+	if (max < 5) {
+		min = 0;
 	}
 %>
 <title>ChanggiFood-나만의 레시피</title>
@@ -99,8 +102,8 @@
             </div>
             <div class="row">
             <%
-            	for(int i = 0; i < al.size(); i++) {
-            		Boardlist bl = al.get(i);
+            for(int i = 0; i < al.size(); i++) {
+                        		BoardlistDto bl = al.get(i);
             %>
                 <div class="col-3" id="p_move">
                     <div>

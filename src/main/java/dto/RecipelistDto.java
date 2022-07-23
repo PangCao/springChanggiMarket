@@ -1,8 +1,6 @@
 package dto;
-import java.io.Serializable;
-public class recipelist implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+public class RecipelistDto{
 	private int r_id;
 	private String r_writer;
 	private String r_category;
