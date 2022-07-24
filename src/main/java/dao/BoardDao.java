@@ -550,7 +550,7 @@ public class BoardDao {
 		String date = format.format(Calendar.getInstance().getTime());
 		String sql = "insert into one_qna (oq_title, oq_writer, oq_content, oq_category, oq_date) values (?,?,?,?,?)"; 
 
-		jdbcTemplate.update(sql, title, id, contents, category, date);
+		jdbcTemplate.update(sql, title, id, contents, qnasel, date);
 	}
 	
 	public void noticewriter(HttpServletRequest request) {

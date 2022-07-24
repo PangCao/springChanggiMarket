@@ -76,8 +76,8 @@ ArrayList<OneqnaDto> onelist = (ArrayList<OneqnaDto>)request.getAttribute("oneqn
                         </tr>
                         <%
                         if(onelist != null){
-                                                	                        	for(int i = 0; i < onelist.size(); i++) {
-                                                	                        		OneqnaDto one = onelist.get(i);
+                        	for(int i = 0; i < onelist.size(); i++) {
+                            	OneqnaDto one = onelist.get(i);
                         %>
                         <tr>
                             <td><%=one.getDate() %></td>

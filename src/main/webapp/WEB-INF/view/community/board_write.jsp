@@ -160,7 +160,7 @@
 			alert("내용을 입력해주세요.");
 			return false;
 		}
-		document.boardForm.action = "notice_write";
+		document.boardForm.action = "notice_write?category=<%=category%>";
 		document.boardForm.submit();
 	}
 </script>
@@ -180,7 +180,7 @@
 			alert("내용을 입력해주세요.");
 			return false;
 		}
-		document.boardForm.action = "bulletin_write";
+		document.boardForm.action = "bulletin_write?category=<%=category%>";
 		document.boardForm.submit();
 	}
 </script>
@@ -205,7 +205,7 @@
 			return false;
 		}
 		document.boardForm.encoding="application/x-www-form-urlencoded";
-		document.boardForm.action = "one_write";
+		document.boardForm.action = "one_write?category=<%=category%>";
 		document.boardForm.submit();
 	}
 </script>
@@ -225,7 +225,7 @@
 			alert("내용을 입력해주세요.");
 			return false;
 		}
-		document.boardForm.action = "review_write";
+		document.boardForm.action = "review_write?category=<%=category%>";
 		document.boardForm.submit();
 	}
 </script>

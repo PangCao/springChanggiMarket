@@ -112,10 +112,10 @@ String order = (String)request.getAttribute("order");
                         </tr>
                         <%
                         if(alo != null){
-                                                                          		for(int i = 0; i < alo.size(); i++) {
-                                                                          			OrderlistDto ol = alo.get(i);
-                                                                          			String[] f_name = ol.getF_singname().split(",");
-                                                                          			String[] f_unit = ol.getF_singunit().split(",");
+                       		for(int i = 0; i < alo.size(); i++) {
+                       			OrderlistDto ol = alo.get(i);
+                       			String[] f_name = ol.getF_singname().split(",");
+                       			String[] f_unit = ol.getF_singunit().split(",");
                         %>
                         <tr>
                         	<%

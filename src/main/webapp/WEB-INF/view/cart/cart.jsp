@@ -115,9 +115,11 @@ ArrayList<CartlistDto> al = (ArrayList<CartlistDto>)session.getAttribute("myCart
                             	int max = 0;
                             	for (int j = 0; j < ca.getFoods().length; j++){
                             		if (ca.getFoodprice()[j] != null && !ca.getFoodprice()[j].equals("null") && !ca.getFoodprice()[j].equals("0")){
-                            			sum += Integer.valueOf(ca.getFoodprice()[j]) *Integer.valueOf(ca.getFoodunit()[j]);
-                            			price = Integer.valueOf(ca.getFoodprice()[j]);
-                            			cnt = Integer.valueOf(ca.getFoodunit()[j]);
+                            			String foodunit = ca.getFoodunit()[j] == null ? "0" : ca.getFoodunit()[j];
+                            			String foodprice = ca.getFoodprice()[j] == null ? "0" : ca.getFoodprice()[j];
+                            			sum += Integer.valueOf(foodprice) *Integer.valueOf(foodunit);
+                            			price = Integer.valueOf(foodprice);
+                            			cnt = Integer.valueOf(foodunit);
                             			max = cf.get(ca.getFoods()[j]);
                             		}
                             		else {
